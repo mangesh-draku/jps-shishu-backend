@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
-from .models import StudentTableStructure,User,TeacherTableStructure
-from .serializer import StudentTableStructureSerilizer,UserSerializer,UserSerializer,UserLoginSerializer,TeacherTableStructureSerilizer
+from .models import StudentTableStructure,User,TeacherTableStructure,GradeTableStructure,QuestionTableStructure
+from .serializer import StudentTableStructureSerilizer,UserSerializer,UserLoginSerializer,TeacherTableStructureSerilizer,GradeTableStructureSerilizer,QuestionTableStructureSerilizer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -57,6 +57,36 @@ class TeacherRegistration(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class Grade_API(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, format=None):
+        queryset = GradeTableStructure.objects.all()
+        serializer = GradeTableStructureSerilizer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = GradeTableStructureSerilizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class Question_API(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, format=None):
+        queryset = QuestionTableStructure.objects.all()
+        serializer = QuestionTableStructureSerilizer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = QuestionTableStructureSerilizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     
 class LoginAPI(APIView):
     permission_classes = (AllowAny,)
