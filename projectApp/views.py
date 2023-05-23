@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
-from .models import StudentTableStructure,User
-from .serializer import StudentTableStructureSerilizer,UserSerializer,UserSerializer,UserLoginSerializer
+from .models import StudentTableStructure,User,TeacherTableStructure
+from .serializer import StudentTableStructureSerilizer,UserSerializer,UserSerializer,UserLoginSerializer,TeacherTableStructureSerilizer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -39,6 +39,20 @@ class StudentRegistration(APIView):
 
     def post(self, request, format=None):
         serializer = StudentTableStructureSerilizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class TeacherRegistration(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, format=None):
+        queryset = TeacherTableStructure.objects.all()
+        serializer = TeacherTableStructureSerilizer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = TeacherTableStructureSerilizer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
