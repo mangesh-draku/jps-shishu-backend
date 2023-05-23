@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
 from .models import StudentTableStructure,User
-from .serializer import StudentTableStructureSerilizer,UserSerializer
+from .serializer import StudentTableStructureSerilizer,UserSerializer,UserSerializer,UserLoginSerializer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -45,22 +45,24 @@ class StudentRegistration(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class LoginAPI(APIView):
-    queryset = User.objects.all()
     permission_classes = (AllowAny,)
     
     def post(self, request):
-        email = request.data["email"]
-        password = request.data["password"]
-        print("email",email,"password",password)
-        user = authenticate(email=email, password=password)
-        print("user",user)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-        if user is None or user.is_active == False:
-            raise serializers.ValidationError(
-                'A user with this email and password is not found.'
-            )
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            email = serializer.data.get("email")
+            password = serializer.data.get("password")
+            print("email",email,"password",password)
+            user = authenticate(email=email, password=password)
+            print("user",user)
+            if user is not None:
+                if user.is_active:
+                    print("user login success")
+                    login(request, user)
+            if user is None or user.is_active == False:
+                raise serializers.ValidationError(
+                    'A user with this email and password is not found.'
+                )
         try:
             refresh = RefreshToken.for_user(user)
         except User.DoesNotExist:
@@ -77,4 +79,3 @@ class LoginAPI(APIView):
             'user': user,
             'token': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
-    
