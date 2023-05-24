@@ -86,7 +86,6 @@ class TeacherTableStructure(models.Model):
     app_token = models.CharField(max_length=255,null=True,default=None)
     avatar = models.CharField(max_length=255,null=True,default=None)
     city = models.CharField(max_length=255,null=True,default=None)
-    content_access = models.BooleanField(default=False)
     country = models.CharField(max_length=255,null=True,default=None)
     date_of_birth = models.DateTimeField (default=timezone.now, null=True, blank=True)
     date_of_joining = models.DateTimeField (default=timezone.now, null=True, blank=True)
@@ -148,4 +147,4 @@ class GradeTableStructure(models.Model):
      name = models.CharField(max_length=255,null=True, default=None)
      grade_code = models.CharField(max_length=255,null=True, default=None)
      class Meta:
-        db_table = "grade_table_structure"
+        db_table = "grade_table_structure"  
