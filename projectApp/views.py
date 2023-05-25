@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
-from .models import StudentTableStructure,User,TeacherTableStructure,GradeTableStructure,QuestionTableStructure
-from .serializer import StudentTableStructureSerilizer,UserSerializer,UserLoginSerializer,TeacherTableStructureSerilizer,GradeTableStructureSerilizer,QuestionTableStructureSerilizer
+from .models import GradeTableStructure,QuestionTableStructure
+from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -14,50 +14,9 @@ from django.contrib.auth import login,authenticate,logout
 from rest_framework_simplejwt.tokens import RefreshToken
 from .utils import get_user_object
 import copy
+from django.http import Http404
 
 
-class UserRegistration(APIView):
-    permission_classes = (AllowAny,)
-    def get(self, request, format=None):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class StudentRegistration(APIView):
-    permission_classes = (AllowAny,)
-    def get(self, request, format=None):
-        queryset = StudentTableStructure.objects.all()
-        serializer = StudentTableStructureSerilizer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = StudentTableStructureSerilizer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class TeacherRegistration(APIView):
-    permission_classes = (AllowAny,)
-    def get(self, request, format=None):
-        queryset = TeacherTableStructure.objects.all()
-        serializer = TeacherTableStructureSerilizer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = TeacherTableStructureSerilizer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 class Grade_API(APIView):
     permission_classes = (AllowAny,)
     def get(self, request, format=None):
@@ -71,6 +30,35 @@ class Grade_API(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class GradeDetail(APIView):
+    """
+    Retrieve, update or delete a grade instance.
+    """
+    permission_classes = (AllowAny,)
+    def get_object(self, pk):
+        try:
+            return GradeTableStructure.objects.get(pk=pk)
+        except GradeTableStructure.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        GradeTableStructure = self.get_object(pk)
+        serializer = GradeTableStructureSerilizer(GradeTableStructure)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        GradeTableStructure = self.get_object(pk)
+        serializer = GradeTableStructureSerilizer(GradeTableStructure, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        GradeTableStructure = self.get_object(pk)
+        GradeTableStructure.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class Question_API(APIView):
     permission_classes = (AllowAny,)
@@ -86,40 +74,32 @@ class Question_API(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-    
-class LoginAPI(APIView):
+class QuestionDetail(APIView):
+    """
+    Retrieve, update or delete a question instance.
+    """
     permission_classes = (AllowAny,)
-    
-    def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            email = serializer.data.get("email")
-            password = serializer.data.get("password")
-            print("email",email,"password",password)
-            user = authenticate(email=email, password=password)
-            print("user",user)
-            if user is not None:
-                if user.is_active:
-                    print("user login success")
-                    login(request, user)
-            if user is None or user.is_active == False:
-                raise serializers.ValidationError(
-                    'A user with this email and password is not found.'
-                )
+    def get_object(self, pk):
         try:
-            refresh = RefreshToken.for_user(user)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                'User with given email and password does not exists'
-            )
-        copyUser = copy.deepcopy(user)
-        if copyUser.first_time:
-            copyUser.first_time = False
-            copyUser.save()
-        user = get_user_object(user)
+            return QuestionTableStructure.objects.get(pk=pk)
+        except QuestionTableStructure.DoesNotExist:
+            raise Http404
 
-        return Response({
-            'user': user,
-            'token': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
+    def get(self, request, pk, format=None):
+        QuestionTableStructure = self.get_object(pk)
+        serializer = QuestionTableStructureSerilizer(QuestionTableStructure)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        QuestionTableStructure = self.get_object(pk)
+        serializer = QuestionTableStructureSerilizer(QuestionTableStructure, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        question = self.get_object(pk)
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    

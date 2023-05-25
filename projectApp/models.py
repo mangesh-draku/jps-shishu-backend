@@ -69,7 +69,7 @@ class StudentTableStructure(models.Model):
     cast_category =models.CharField(max_length=255,null=True,default=None)
     sub_cast =models.CharField(max_length=255,null=True,default=None)
     createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    updateddate  = models.DateField(default=timezone.now, null=True, blank=True)
+    updateddate  = models.DateField(default=None, null=True, blank=True)
     createdby = models.IntegerField(default=None, null=True, blank=True)
     updatedby = models.IntegerField(default=None, null=True, blank=True)
     class Meta:
@@ -78,7 +78,7 @@ class StudentTableStructure(models.Model):
 class TeacherTableStructure(models.Model):
     teacher = models.OneToOneField(User, on_delete=models.CASCADE)
     createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    updateddate = models.DateField(default=timezone.now, null=True, blank=True)
+    updateddate = models.DateField(default=None, null=True, blank=True)
     createdby = models.IntegerField(default=None, null=True, blank=True)
     updatedby = models.IntegerField(default=None, null=True, blank=True)
     aadhar_number = models.CharField(max_length=255,null=True, default=None)
@@ -114,7 +114,7 @@ class TeacherTableStructure(models.Model):
 class QuestionTableStructure(models.Model):
     question_id= models.AutoField(primary_key=True, db_column='question_id')
     createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    updateddate = models.DateField(default=timezone.now, null=True, blank=True)
+    updateddate = models.DateField(default=None, null=True, blank=True)
     createdby = models.IntegerField(default=None, null=True, blank=True)
     updatedby = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
@@ -140,8 +140,9 @@ class QuestionTableStructure(models.Model):
 
 class GradeTableStructure(models.Model):
      grade_id=models.AutoField(primary_key=True, db_column='grade_id')
-     createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-     updateddate  = models.DateField(default=timezone.now, null=True, blank=True)
+     createddate = models.DateTimeField(
+        default=timezone.now, null=True, blank=True)
+     updateddate  = models.DateField(default=None, null=True, blank=True)
      createdby = models.IntegerField(default=None, null=True, blank=True)
      updatedby = models.IntegerField(default=None, null=True, blank=True)
      name = models.CharField(max_length=255,null=True, default=None)
