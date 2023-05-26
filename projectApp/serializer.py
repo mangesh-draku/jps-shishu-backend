@@ -41,6 +41,7 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeacherTableStructureSerilizer(Serializer):
+    id = serializers.IntegerField(required=False)
     email = serializers.CharField(allow_null=True, allow_blank=True)
     phone = serializers.CharField(allow_null=True, allow_blank=True)
     firstname = serializers.CharField(allow_null=True, allow_blank=True)
@@ -106,6 +107,9 @@ class TeacherTableStructureSerilizer(Serializer):
 
         if internal_data.get("weight", None) == None:
             internal_data['weight'] = None
+
+        if internal_data.get("id", None) == None:
+            internal_data['id'] = None
 
         return super(TeacherTableStructureSerilizer, self).to_internal_value(internal_data)
     def create(self, validated_data):

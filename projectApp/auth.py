@@ -14,6 +14,8 @@ from django.contrib.auth import login,authenticate,logout
 from rest_framework_simplejwt.tokens import RefreshToken
 from .utils import get_user_object
 import copy
+from django.http import Http404
+
 
 
 class UserRegistration(APIView):
@@ -94,3 +96,32 @@ class LoginAPI(APIView):
             'user': user,
             'token': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
+    
+class TeacherDetail(APIView):
+    """
+    Retrieve, update or delete a question instance.
+    """
+    permission_classes = (AllowAny,)
+    def get_object(self, pk):
+        try:
+            return TeacherTableStructure.objects.get(pk=pk)
+        except TeacherTableStructure.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        TeacherTableStructure = self.get_object(pk)
+        serializer = TeacherTableStructureSerilizer(TeacherTableStructure)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        TeacherTableStructure = self.get_object(pk)
+        serializer = TeacherTableStructureSerilizer(TeacherTableStructure, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        question = self.get_object(pk)
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
