@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .auth import UserRegistration,StudentRegistration,TeacherRegistration,LoginAPI,TeacherDetail
+from .auth import UserRegistration,StudentRegistration,TeacherRegistration,LoginAPI,TeacherDetail,StudentDetail
 from .views import Grade_API,Question_API,GradeDetail,QuestionDetail
 urlpatterns = [
     # auth urls
@@ -11,7 +11,8 @@ urlpatterns = [
    path('grade-api', Grade_API.as_view(), name='Grade_API'),
    path('question-api', Question_API.as_view(), name='Question_API'),
    path('grade-detail/<int:pk>/', GradeDetail.as_view(), name='GradeDetail'),
-   path('question-detail/<int:pk>/', GradeDetail.as_view(), name='QuestionDetail'),
+   path('question-detail/<int:pk>/', QuestionDetail.as_view(), name='QuestionDetail'),
    path('teacher-detail/<int:pk>/', TeacherDetail.as_view(), name='TeacherDetail'),
+   path('student-detail/<int:pk>/', StudentDetail.as_view(), name='StudentDetail'),
 
 ]
