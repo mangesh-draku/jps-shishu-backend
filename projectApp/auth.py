@@ -40,6 +40,7 @@ class StudentRegistration(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        print('request.data: ', request.data)
         serializer = StudentTableStructureSerilizer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
