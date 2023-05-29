@@ -49,7 +49,7 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
     email = serializers.CharField(allow_null=True, allow_blank=True)
     # avatar = serializers.CharField(allow_null=True, allow_blank=True)
     # birthplace=serializers.CharField(allow_null=True, allow_blank=True)
-    # blood_group=serializers.CharField(allow_null=True, allow_blank=True)
+    blood_group=serializers.CharField(allow_null=True, allow_blank=True)
     country=serializers.CharField(allow_null=True, allow_blank=True)
     state=serializers.CharField(allow_null=True, allow_blank=True)
     city=serializers.CharField(allow_null=True, allow_blank=True)
@@ -72,6 +72,9 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
     
     def to_internal_value(self, data):
         internal_data = copy.deepcopy(data)
+        if internal_data.get("aadhar_number", None) == None:
+            internal_data['aadhar_number'] = None
+            
         if internal_data.get("firstname", None) == None:
             internal_data['firstname'] = None
         
@@ -81,9 +84,6 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
         if internal_data.get("lastname", None) == None:
             internal_data['lastname'] = None
         
-        if internal_data.get("aadhar_number", None) == None:
-            internal_data['aadhar_number'] = None
-
         if internal_data.get("email", None) == None:
             internal_data['email'] = None
 
@@ -105,8 +105,17 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
         if internal_data.get("pincode", None) == None:
             internal_data['pincode'] = None
         
+        if internal_data.get("date_of_birth", None) == None:
+            internal_data['date_of_birth'] = None
+        
         if internal_data.get("gender", None) == None:
             internal_data['gender'] = None
+        
+        if internal_data.get("date_of_admission", None) == None:
+            internal_data['date_of_admission'] = None
+        
+        if internal_data.get("age", None) == None:
+            internal_data['age'] = None
         
         if internal_data.get("height", None) == None:
             internal_data['height'] = None
@@ -114,12 +123,15 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
         if internal_data.get("weight", None) == None:
             internal_data['weight'] = None
         
-        if internal_data.get("grade_id", None) == None:
-            internal_data['grade_id'] = None
+        if internal_data.get("blood_group", None) == None:
+            internal_data['blood_group'] = None
         
-        if internal_data.get("user_id", None) == None:
-            internal_data['user_id'] = None
-
+        if internal_data.get("cast_category", None) == None:
+            internal_data['cast_category'] = None
+        
+        if internal_data.get("religion", None) == None:
+            internal_data['religion'] = None
+        
         return super(StudentTableStructureSerilizer, self).to_internal_value(internal_data)
     
     def create(self, validated_data):
@@ -147,18 +159,22 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
                     city=validated_data['city'],
                     pincode=validated_data['pincode'],
                     date_of_birth = validated_data['date_of_birth'],
-                    date_of_admission = validated_data['date_of_admission'],
                     gender=validated_data['gender'],
+                    date_of_admission = validated_data['date_of_admission'],
+                    age=validated_data['age'],
                     height=validated_data['height'],
                     weight=validated_data['weight'],
-                    grade_id=validated_data['grade_id'],
-                    user_id=validated_data['user_id'],
-                    # date_of_joining=validated_data['date_of_admission'],
-                    # middlename=validated_data['middlename'],
-                    # pincode=validated_data['pincode'],
+                    blood_group=validated_data['blood_group'],
+                    cast_category=validated_data['cast_category'],
+                    religion=validated_data['religion'],
                 )
                 return request_data
     class Meta:
+        model = StudentTableStructure
+        fields = '__all__'
+
+class StudentSerilizer(serializers.ModelSerializer):
+     class Meta:
         model = StudentTableStructure
         fields = '__all__'
 
