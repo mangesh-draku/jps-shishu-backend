@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure
+from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure,AssessmentTableStructure
 import string
 import random
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -8,9 +8,9 @@ import copy
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print("validated data",validated_data)
-        password = validated_data['firstname'][0:4] + \
-                    ''.join([random.choice(string.digits) for i in range(0, 4)])
-        validated_data['password'] = password 
+        # password = validated_data['firstname'][0:4] + \
+        #             ''.join([random.choice(string.digits) for i in range(0, 4)])
+        # validated_data['password'] = password 
         user = User.objects.create(
                     username=validated_data['username'],
                     email=validated_data['email'],
@@ -300,4 +300,52 @@ class GradeTableStructureSerilizer(serializers.ModelSerializer):
 class QuestionTableStructureSerilizer(serializers.ModelSerializer):
     class Meta:
         model = QuestionTableStructure
+        fields = '__all__'
+
+
+class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
+
+    # name = serializers.CharField(allow_null=True, allow_blank=True)
+    # class_name = serializers.CharField(allow_null=True, allow_blank=True)
+    # subject = serializers.CharField(allow_null=True, allow_blank=True)
+    # teacher_name = serializers.CharField(allow_null=True, allow_blank=True)
+    # question_type = serializers.CharField(allow_null=True, allow_blank=True)
+    # date = serializers.CharField(allow_null=True, allow_blank=True)
+    # marks = serializers.CharField(allow_null=True, allow_blank=True)
+
+    
+    # def to_internal_value(self, data):
+    #     internal_data = copy.deepcopy(data)
+    #     if internal_data.get("name", None) == None:
+    #         internal_data['name'] = None
+
+    #     if internal_data.get("class_name", None) == None:
+    #         internal_data['class_name'] = None
+        
+    #     if internal_data.get("subject", None) == None:
+    #         internal_data['subject'] = None
+        
+    #     if internal_data.get("teacher_name", None) == None:
+    #         internal_data['teacher_name'] = None
+        
+    #     if internal_data.get("marks", None) == None:
+    #         internal_data['marks'] = None
+    
+    #     return super(TeacherTableStructureSerilizer, self).to_internal_value(internal_data)
+    
+    def create(self, validated_data):
+        request_data = copy.deepcopy(validated_data)
+
+        AssessmentTableStructure.objects.create(
+            name=validated_data['name'],
+            class_name=validated_data['class_name'],
+            subject=validated_data['subject'],
+            teacher_name=validated_data['teacher_name'],
+            question_type=validated_data['question_type'],
+            date=validated_data['date'],
+            marks=validated_data['marks'])
+        return request_data
+
+class Meta:
+        model = AssessmentTableStructure
         fields = '__all__'

@@ -149,3 +149,15 @@ class GradeTableStructure(models.Model):
      grade_code = models.CharField(max_length=255,null=True, default=None)
      class Meta:
         db_table = "grade_table_structure"  
+
+class AssessmentTableStructure(models.Model):
+    name= models.CharField(max_length=255,null=True,default=None)
+    standard= models.CharField(max_length=255,null=True,default=None)
+    subject= models.CharField(max_length=255,null=True,default=None)
+    teacher_name= models.CharField(max_length=255,null=True,default=None)
+    question_type= models.CharField(max_length=255,null=True,default=None)
+    date= models.DateTimeField(default=timezone.now, null=True, blank=True)
+    marks= models.IntegerField(default=None, null=True, blank=True)
+
+    class Meta:
+        db_table = "assessment_table_structure"
