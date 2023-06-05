@@ -26,5 +26,5 @@ urlpatterns = [
 
    # Assessment urls
    path('assessment-api', Assessment_API.as_view(), name='Assessment_Api'),
-   path('assessment-detail', AssessmentDetail.as_view(), name='AssessmentDetail'),
+   path('assessment-detail/<int:pk>/', AssessmentDetail.as_view(), name='AssessmentDetail'),
 ]

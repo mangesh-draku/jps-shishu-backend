@@ -304,48 +304,7 @@ class QuestionTableStructureSerilizer(serializers.ModelSerializer):
 
 
 class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
-
-    # name = serializers.CharField(allow_null=True, allow_blank=True)
-    # class_name = serializers.CharField(allow_null=True, allow_blank=True)
-    # subject = serializers.CharField(allow_null=True, allow_blank=True)
-    # teacher_name = serializers.CharField(allow_null=True, allow_blank=True)
-    # question_type = serializers.CharField(allow_null=True, allow_blank=True)
-    # date = serializers.CharField(allow_null=True, allow_blank=True)
-    # marks = serializers.CharField(allow_null=True, allow_blank=True)
-
-    
-    # def to_internal_value(self, data):
-    #     internal_data = copy.deepcopy(data)
-    #     if internal_data.get("name", None) == None:
-    #         internal_data['name'] = None
-
-    #     if internal_data.get("class_name", None) == None:
-    #         internal_data['class_name'] = None
-        
-    #     if internal_data.get("subject", None) == None:
-    #         internal_data['subject'] = None
-        
-    #     if internal_data.get("teacher_name", None) == None:
-    #         internal_data['teacher_name'] = None
-        
-    #     if internal_data.get("marks", None) == None:
-    #         internal_data['marks'] = None
-    
-    #     return super(TeacherTableStructureSerilizer, self).to_internal_value(internal_data)
-    
-    def create(self, validated_data):
-        request_data = copy.deepcopy(validated_data)
-
-        AssessmentTableStructure.objects.create(
-            name=validated_data['name'],
-            class_name=validated_data['class_name'],
-            subject=validated_data['subject'],
-            teacher_name=validated_data['teacher_name'],
-            question_type=validated_data['question_type'],
-            date=validated_data['date'],
-            marks=validated_data['marks'])
-        return request_data
-
-class Meta:
-        model = AssessmentTableStructure
-        fields = '__all__'
+    questions = QuestionTableStructureSerilizer(many=True)
+    class Meta:
+            model = AssessmentTableStructure
+            fields =  '__all__'
