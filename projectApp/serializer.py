@@ -326,8 +326,47 @@ class QuestionTableStructureSerilizer(serializers.ModelSerializer):
         model = QuestionTableStructure
         fields = '__all__'
 
+class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
+    match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False)
+    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False)
+    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False)
+
+    def create(self, validated_data):
+        return_data = copy.deepcopy(validated_data)
+        # return super().create(validated_data)
+        print("return_data",return_data)
+        if "objective" == validated_data['question_type']:
+            print("inside 1st")
+            objective = validated_data.pop('multiple_choice_question')
+            serializer = QuestionMultipleChoiceQuestionsSerilizer(data=objective)
+            if serializer.is_valid():
+                serializer.save()
+            id = QuestionMultipleChoiceQuestions.objects.get(id=serializer.data['id'])
+            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective')
+
+        elif "matching_question" == validated_data['question_type']:
+            matching_question = validated_data.pop('match_the_pairs_question')
+            serializer = QuestionMatchThePairsSerilizer(data=matching_question)
+            if serializer.is_valid():
+                serializer.save()
+            id = QuestionMatchThePairs.objects.get(id=serializer.data['id'])
+            QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question')
+
+        elif "relevent_picture" == validated_data['question_type']:
+            relevent_picture = validated_data.pop('select_relevent_picture_question')
+            serializer = QuestionSelectReleventPictureSerilizer(data=relevent_picture)
+            if serializer.is_valid():
+                serializer.save()
+            id = QuestionSelectReleventPicture.objects.get(id=serializer.data['id'])
+            QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture')
+            
+        return return_data
+    class Meta:
+        model = QuestionTableStructure
+        fields = '__all__'
+
 class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
-    questions = QuestionTableStructureSerilizer(many=True)
+    # questions = QuestionTableStructureSerilizer(many=True)
     class Meta:
             model = AssessmentTableStructure
             fields =  '__all__'

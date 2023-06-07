@@ -185,10 +185,9 @@ class QuestionTableStructure(models.Model):
     createdby = models.IntegerField(default=None, null=True, blank=True)
     updatedby = models.IntegerField(default=None, null=True, blank=True)
     question_type = models.CharField(max_length=255,null=True,default=None)
-    assessment = models.ForeignKey(AssessmentTableStructure, on_delete=models.CASCADE,related_name="questions",null=True)
-    select_relevent_picture_question = models.ForeignKey(QuestionSelectReleventPicture, on_delete=models.CASCADE,related_name="select_relevent_picture_question",null=True)
-    match_the_pairs_question = models.ForeignKey(QuestionMatchThePairs, on_delete=models.CASCADE,related_name="match_the_pairs_question",null=True)
-    multiple_choice_question = models.ForeignKey(QuestionMultipleChoiceQuestions, on_delete=models.CASCADE,related_name="multiple_choice_question",null=True)
+    select_relevent_picture_question = models.ForeignKey(QuestionSelectReleventPicture, on_delete=models.CASCADE,related_name="select_relevent_picture_question",null=True,blank=True)
+    match_the_pairs_question = models.ForeignKey(QuestionMatchThePairs, on_delete=models.CASCADE,related_name="match_the_pairs_question",null=True,blank=True)
+    multiple_choice_question = models.ForeignKey(QuestionMultipleChoiceQuestions, on_delete=models.CASCADE,related_name="multiple_choice_question",null=True,blank=True)
 
     class Meta:
         db_table = "question_table_structure"

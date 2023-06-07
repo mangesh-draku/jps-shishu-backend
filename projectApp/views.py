@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
 from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture
-from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,QuestionSelectReleventPictureSerilizer
+from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -68,12 +68,11 @@ class Question_API(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = QuestionTableStructureSerilizer(data=request.data)
+        serializer = QuestionTableStructureSerilizerCreate(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class QuestionDetail(APIView):
     """
     Retrieve, update or delete a question instance.
