@@ -330,6 +330,7 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
     match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False)
     multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False)
     select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False)
+    # grade = GradeTableStructureSerilizer(read_only=False)
 
     def create(self, validated_data):
         return_data = copy.deepcopy(validated_data)
@@ -342,7 +343,7 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
             if serializer.is_valid():
                 serializer.save()
             id = QuestionMultipleChoiceQuestions.objects.get(id=serializer.data['id'])
-            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective')
+            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',grade_id=validated_data['grade_id'])
 
         elif "matching_question" == validated_data['question_type']:
             matching_question = validated_data.pop('match_the_pairs_question')
@@ -350,7 +351,7 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
             if serializer.is_valid():
                 serializer.save()
             id = QuestionMatchThePairs.objects.get(id=serializer.data['id'])
-            QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question')
+            QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question',grade_id=validated_data['grade_id'])
 
         elif "relevent_picture" == validated_data['question_type']:
             relevent_picture = validated_data.pop('select_relevent_picture_question')
@@ -358,7 +359,7 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
             if serializer.is_valid():
                 serializer.save()
             id = QuestionSelectReleventPicture.objects.get(id=serializer.data['id'])
-            QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture')
+            QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture',grade_id=validated_data['grade_id'])
             
         return return_data
     class Meta:

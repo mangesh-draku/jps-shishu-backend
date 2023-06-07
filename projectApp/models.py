@@ -178,19 +178,6 @@ class QuestionMultipleChoiceQuestions(models.Model):
     subject_id = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
 
-class QuestionTableStructure(models.Model):
-    question_id = models.AutoField(primary_key=True, db_column='question_id')
-    createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    updateddate = models.DateField(default=None, null=True, blank=True)
-    createdby = models.IntegerField(default=None, null=True, blank=True)
-    updatedby = models.IntegerField(default=None, null=True, blank=True)
-    question_type = models.CharField(max_length=255,null=True,default=None)
-    select_relevent_picture_question = models.ForeignKey(QuestionSelectReleventPicture, on_delete=models.CASCADE,related_name="select_relevent_picture_question",null=True,blank=True)
-    match_the_pairs_question = models.ForeignKey(QuestionMatchThePairs, on_delete=models.CASCADE,related_name="match_the_pairs_question",null=True,blank=True)
-    multiple_choice_question = models.ForeignKey(QuestionMultipleChoiceQuestions, on_delete=models.CASCADE,related_name="multiple_choice_question",null=True,blank=True)
-
-    class Meta:
-        db_table = "question_table_structure"
 class GradeTableStructure(models.Model):
      grade_id=models.AutoField(primary_key=True, db_column='grade_id')
      createddate = models.DateTimeField(
@@ -204,6 +191,22 @@ class GradeTableStructure(models.Model):
      teacher = models.ManyToManyField(TeacherTableStructure)
      class Meta:
         db_table = "grade_table_structure"  
+        
+class QuestionTableStructure(models.Model):
+    question_id = models.AutoField(primary_key=True, db_column='question_id')
+    createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    updateddate = models.DateField(default=None, null=True, blank=True)
+    createdby = models.IntegerField(default=None, null=True, blank=True)
+    updatedby = models.IntegerField(default=None, null=True, blank=True)
+    question_type = models.CharField(max_length=255,null=True,default=None)
+    grade_id = models.ForeignKey(GradeTableStructure, on_delete=models.CASCADE,related_name="grade",null=True,blank=True)
+    select_relevent_picture_question = models.ForeignKey(QuestionSelectReleventPicture, on_delete=models.CASCADE,related_name="select_relevent_picture_question",null=True,blank=True)
+    match_the_pairs_question = models.ForeignKey(QuestionMatchThePairs, on_delete=models.CASCADE,related_name="match_the_pairs_question",null=True,blank=True)
+    multiple_choice_question = models.ForeignKey(QuestionMultipleChoiceQuestions, on_delete=models.CASCADE,related_name="multiple_choice_question",null=True,blank=True)
+
+    class Meta:
+        db_table = "question_table_structure"
+
 
 
   
