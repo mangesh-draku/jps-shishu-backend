@@ -1,6 +1,6 @@
 from django.urls import path,include
 from .auth import UserRegistration,StudentRegistration,TeacherRegistration,LoginAPI,TeacherDetail,TeacherList, StudentList, StudentDetail
-from .views import Grade_API,Question_API,Assessment_API,GradeDetail,QuestionDetail,AssessmentDetail
+from .views import Grade_API,Question_API,Assessment_API,GradeDetail,QuestionDetail,AssessmentDetail,QuestionSelectReleventPictureAPI,QuestionMatchThePairsAPI,QuestionMultipleChoiceQuestionsAPI
 urlpatterns = [
    path('login-user', LoginAPI.as_view(), name='loginUser'),
    
@@ -20,6 +20,9 @@ urlpatterns = [
    
     # Question urls
    path('question-api', Question_API.as_view(), name='Question_API'),
+   path('relevent-pic-api', QuestionSelectReleventPictureAPI.as_view(), name='QuestionSelectReleventPictureAPI'),
+   path('match-pairs-api', QuestionMatchThePairsAPI.as_view(), name='QuestionMatchThePairsAPI'),
+   path('mcq-api', QuestionMultipleChoiceQuestionsAPI.as_view(), name='QuestionMultipleChoiceQuestionsAPI'),
    path('question-detail/<int:pk>/', QuestionDetail.as_view(), name='QuestionDetail'),
 
    path('user-registration', UserRegistration.as_view(), name='UserRegistration'),
