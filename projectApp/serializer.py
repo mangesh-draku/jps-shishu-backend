@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure,AssessmentTableStructure
+from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture
 import string
 import random
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -297,11 +297,34 @@ class GradeTableStructureSerilizer(serializers.ModelSerializer):
     class Meta:
         model = GradeTableStructure
         fields = '__all__'
+
+class QuestionMatchThePairsSerilizer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionMatchThePairs
+        fields = '__all__'
+
+class QuestionMultipleChoiceQuestionsSerilizer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionMultipleChoiceQuestions
+        fields = '__all__'
+
+class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionSelectReleventPicture
+        fields = '__all__'
+
+
 class QuestionTableStructureSerilizer(serializers.ModelSerializer):
+    match_the_pairs_question = QuestionMatchThePairsSerilizer(read_only=True)
+    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(read_only=True)
+    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=True)
+
     class Meta:
         model = QuestionTableStructure
         fields = '__all__'
-
 
 class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
     questions = QuestionTableStructureSerilizer(many=True)

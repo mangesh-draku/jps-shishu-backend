@@ -133,36 +133,65 @@ class AssessmentTableStructure(models.Model):
     class Meta:
         db_table = "assessment_table_structure"
 
-class QuestionTableStructure(models.Model):
-    question_id= models.AutoField(primary_key=True, db_column='question_id')
-    createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    updateddate = models.DateField(default=None, null=True, blank=True)
-    createdby = models.IntegerField(default=None, null=True, blank=True)
-    updatedby = models.IntegerField(default=None, null=True, blank=True)
-    answer = models.CharField(max_length=255, null=True, default=None)
-    answer_explanation = models.TextField(max_length=500, blank=True, null=True)
-    answer_explanation_images = models.TextField(max_length=500, blank=True, null=True)
-    default_weight_age= models.FloatField(max_length=500,blank=True, null=True)
-    objective_subjective_type = models.CharField(max_length=255,null=True,default=None)
+
+
+class QuestionSelectReleventPicture(models.Model):
     option1 = models.TextField(max_length=500, blank=True, null=True)
     option2 = models.TextField(max_length=500, blank=True, null=True)
     option3 = models.TextField(max_length=500, blank=True, null=True)
     option4 = models.TextField(max_length=500, blank=True, null=True)
     option5 = models.TextField(max_length=500, blank=True, null=True)
     option6 = models.TextField(max_length=500, blank=True, null=True)
-    question= models.TextField(max_length=500, blank=True, null=True)
-    option_count= models.TextField(max_length=500, blank=True, null=True)
-    question_image= models.TextField(max_length=500, blank=True, null=True)
-    question_type= models.CharField(max_length=255,null=True,default=None)
-    chapter_id = models.IntegerField(default=None, null=True, blank=True)
-    language_id = models.IntegerField(default=None, null=True, blank=True)
-    subject_id = models.IntegerField(default=None, null=True, blank=True)
+    question = models.TextField(max_length=500, blank=True, null=True)
+    option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
+    chapter_id = models.IntegerField(default=None, null=True, blank=True)
+    subject_id = models.IntegerField(default=None, null=True, blank=True)
+    answer = models.CharField(max_length=255, null=True, default=None)
+    
+
+class QuestionMatchThePairs(models.Model):
+    option1 = models.TextField(max_length=500, blank=True, null=True)
+    option2 = models.TextField(max_length=500, blank=True, null=True)
+    option3 = models.TextField(max_length=500, blank=True, null=True)
+    option4 = models.TextField(max_length=500, blank=True, null=True)
+    option5 = models.TextField(max_length=500, blank=True, null=True)
+    option6 = models.TextField(max_length=500, blank=True, null=True)
+    question = models.TextField(max_length=500, blank=True, null=True)
+    option_count = models.TextField(max_length=500, blank=True, null=True)
+    mark = models.IntegerField(default=None, null=True, blank=True)
+    chapter_id = models.IntegerField(default=None, null=True, blank=True)
+    subject_id = models.IntegerField(default=None, null=True, blank=True)
+    answer = models.CharField(max_length=255, null=True, default=None)
+
+class QuestionMultipleChoiceQuestions(models.Model):
+    option1 = models.TextField(max_length=500, blank=True, null=True)
+    option2 = models.TextField(max_length=500, blank=True, null=True)
+    option3 = models.TextField(max_length=500, blank=True, null=True)
+    option4 = models.TextField(max_length=500, blank=True, null=True)
+    option5 = models.TextField(max_length=500, blank=True, null=True)
+    option6 = models.TextField(max_length=500, blank=True, null=True)
+    question = models.TextField(max_length=500, blank=True, null=True)
+    option_count = models.TextField(max_length=500, blank=True, null=True)
+    mark = models.IntegerField(default=None, null=True, blank=True)
+    chapter_id = models.IntegerField(default=None, null=True, blank=True)
+    subject_id = models.IntegerField(default=None, null=True, blank=True)
+    answer = models.CharField(max_length=255, null=True, default=None)
+
+class QuestionTableStructure(models.Model):
+    question_id = models.AutoField(primary_key=True, db_column='question_id')
+    createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    updateddate = models.DateField(default=None, null=True, blank=True)
+    createdby = models.IntegerField(default=None, null=True, blank=True)
+    updatedby = models.IntegerField(default=None, null=True, blank=True)
+    question_type = models.CharField(max_length=255,null=True,default=None)
     assessment = models.ForeignKey(AssessmentTableStructure, on_delete=models.CASCADE,related_name="questions",null=True)
+    select_relevent_picture_question = models.ForeignKey(QuestionSelectReleventPicture, on_delete=models.CASCADE,related_name="select_relevent_picture_question",null=True)
+    match_the_pairs_question = models.ForeignKey(QuestionMatchThePairs, on_delete=models.CASCADE,related_name="match_the_pairs_question",null=True)
+    multiple_choice_question = models.ForeignKey(QuestionMultipleChoiceQuestions, on_delete=models.CASCADE,related_name="multiple_choice_question",null=True)
 
     class Meta:
         db_table = "question_table_structure"
-
 class GradeTableStructure(models.Model):
      grade_id=models.AutoField(primary_key=True, db_column='grade_id')
      createddate = models.DateTimeField(

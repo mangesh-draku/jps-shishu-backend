@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
-from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableStructure
-from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer
+from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture
+from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,QuestionSelectReleventPictureSerilizer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -147,3 +147,17 @@ class AssessmentDetail(APIView):
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+class QuestionMatchThePairsAPI(generics.ListCreateAPIView):
+    permission_classes = (AllowAny,)
+    queryset = QuestionMatchThePairs.objects.all()
+    serializer_class = QuestionMatchThePairsSerilizer
+
+class QuestionMultipleChoiceQuestionsAPI(generics.ListCreateAPIView):
+    permission_classes = (AllowAny,)
+    queryset = QuestionMultipleChoiceQuestions.objects.all()
+    serializer_class = QuestionMultipleChoiceQuestionsSerilizer
+
+class QuestionSelectReleventPictureAPI(generics.ListCreateAPIView):
+    permission_classes = (AllowAny,)
+    queryset = QuestionSelectReleventPicture.objects.all()
+    serializer_class = QuestionSelectReleventPictureSerilizer
