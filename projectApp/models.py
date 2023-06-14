@@ -187,8 +187,8 @@ class GradeTableStructure(models.Model):
      updatedby = models.IntegerField(default=None, null=True, blank=True)
      name = models.CharField(max_length=255,null=True, default=None)
      grade_code = models.CharField(max_length=255,null=True, default=None)
-     student = models.ManyToManyField(StudentTableStructure)
-     teacher = models.ManyToManyField(TeacherTableStructure)
+     student = models.ManyToManyField(StudentTableStructure,blank=True)
+     teacher = models.ManyToManyField(TeacherTableStructure,blank=True)
      class Meta:
         db_table = "grade_table_structure"  
         

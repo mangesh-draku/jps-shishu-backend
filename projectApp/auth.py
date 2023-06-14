@@ -108,9 +108,19 @@ class LoginAPI(APIView):
             copyUser.first_time = False
             copyUser.save()
         user = get_user_object(user)
+        if user["is_student"]:
+            profile = StudentTableStructure.objects.get(student=user["id"])
+            profile = StudentTableStructureSerilizer(profile).data
+
+        elif user["is_teacher"]:
+            profile = TeacherTableStructure.objects.get(teacher=user["id"])
+            profile = TeacherTableStructureSerilizer(profile).data
+        else:
+            profile = "admin profile"
 
         return Response({
             'user': user,
+            'profile':profile,
             'token': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
     

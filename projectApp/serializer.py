@@ -141,6 +141,7 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
                 username = validated_data['firstname']+validated_data['lastname']+''.join([random.choice(string.digits) for i in range(0, 4)])
                 password = request_data['firstname'][0:4] + \
                     ''.join([random.choice(string.digits) for i in range(0, 4)])
+                # password = "dummy@123"
                 user = User.objects.create(username=username, email=validated_data['email'],
                                         phone=validated_data['phone'], is_student=True)
                 user.set_password(password)
@@ -257,6 +258,8 @@ class TeacherTableStructureSerilizer(Serializer):
                 username = validated_data['firstname']+validated_data['lastname']+''.join([random.choice(string.digits) for i in range(0, 4)])
                 password = request_data['firstname'][0:4] + \
                     ''.join([random.choice(string.digits) for i in range(0, 4)])
+                # password = "dummy@123"
+
                 user = User.objects.create(username=username, email=validated_data['email'],
                                         phone=validated_data['phone'], is_teacher=True)
                 user.set_password(password)
