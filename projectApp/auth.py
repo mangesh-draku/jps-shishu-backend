@@ -110,11 +110,11 @@ class LoginAPI(APIView):
         user = get_user_object(user)
         if user["is_student"]:
             profile = StudentTableStructure.objects.get(student=user["id"])
-            profile = StudentTableStructureSerilizer(profile).data
+            profile = StudentSerilizer(profile).data
 
         elif user["is_teacher"]:
             profile = TeacherTableStructure.objects.get(teacher=user["id"])
-            profile = TeacherTableStructureSerilizer(profile).data
+            profile = TeacherSerilizer(profile).data
         else:
             profile = "admin profile"
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture
+from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture,SubjectTableStructure,ChapterTableStructure
 import string
 import random
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -141,7 +141,7 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
                 username = validated_data['firstname']+validated_data['lastname']+''.join([random.choice(string.digits) for i in range(0, 4)])
                 password = request_data['firstname'][0:4] + \
                     ''.join([random.choice(string.digits) for i in range(0, 4)])
-                # password = "dummy@123"
+                password = "dummy@123"
                 user = User.objects.create(username=username, email=validated_data['email'],
                                         phone=validated_data['phone'], is_student=True)
                 user.set_password(password)
@@ -256,9 +256,9 @@ class TeacherTableStructureSerilizer(Serializer):
         
         with transaction.atomic():
                 username = validated_data['firstname']+validated_data['lastname']+''.join([random.choice(string.digits) for i in range(0, 4)])
-                password = request_data['firstname'][0:4] + \
-                    ''.join([random.choice(string.digits) for i in range(0, 4)])
-                # password = "dummy@123"
+                # password = request_data['firstname'][0:4] + \
+                #     ''.join([random.choice(string.digits) for i in range(0, 4)])
+                password = "dummy@123"
 
                 user = User.objects.create(username=username, email=validated_data['email'],
                                         phone=validated_data['phone'], is_teacher=True)
@@ -287,6 +287,29 @@ class TeacherTableStructureSerilizer(Serializer):
                     weight=validated_data['weight'],
                 )
                 return request_data
+        
+    def update(self, instance, validated_data):
+        instance.aadhar_number = validated_data.get('aadhar_number', instance.aadhar_number)
+        instance.address_line_1 = validated_data.get('address_line_1', instance.address_line_1)
+        instance.country = validated_data.get('country', instance.country)
+        instance.email = validated_data.get('email', instance.email)
+        instance.designation = validated_data.get('designation', instance.designation)
+        instance.father_name = validated_data.get('father_name', instance.father_name)
+        instance.firstname = validated_data.get('firstname', instance.firstname)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.height = validated_data.get('height', instance.height)
+        instance.lastname = validated_data.get('lastname', instance.lastname)
+        instance.marital_status = validated_data.get('marital_status', instance.marital_status)
+        instance.middlename = validated_data.get('middlename', instance.middlename)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.pan_number = validated_data.get('pan_number', instance.pan_number)
+        instance.pincode = validated_data.get('pincode', instance.pincode)
+        instance.state = validated_data.get('state', instance.state)
+        instance.weight = validated_data.get('weight', instance.weight)
+
+        instance.save()
+
+        return instance
     class Meta:
         model = TeacherTableStructure
         fields = '__all__'
@@ -333,6 +356,7 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
     match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False)
     multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False)
     select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False)
+    chapter_id = serializers.IntegerField()
     # grade = GradeTableStructureSerilizer(read_only=False)
 
     def create(self, validated_data):
@@ -343,26 +367,29 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
             print("inside 1st")
             objective = validated_data.pop('multiple_choice_question')
             serializer = QuestionMultipleChoiceQuestionsSerilizer(data=objective)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionMultipleChoiceQuestions.objects.get(id=serializer.data['id'])
-            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',grade_id=validated_data['grade_id'])
+            chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
+            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',chapter_id=chapter_id)
 
         elif "matching_question" == validated_data['question_type']:
             matching_question = validated_data.pop('match_the_pairs_question')
             serializer = QuestionMatchThePairsSerilizer(data=matching_question)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionMatchThePairs.objects.get(id=serializer.data['id'])
-            QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question',grade_id=validated_data['grade_id'])
+            chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
+            QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question',chapter_id=chapter_id)
 
         elif "relevent_picture" == validated_data['question_type']:
             relevent_picture = validated_data.pop('select_relevent_picture_question')
             serializer = QuestionSelectReleventPictureSerilizer(data=relevent_picture)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionSelectReleventPicture.objects.get(id=serializer.data['id'])
-            QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture',grade_id=validated_data['grade_id'])
+            chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
+            QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture',chapter_id=chapter_id)
             
         return return_data
     class Meta:
@@ -370,7 +397,58 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
         fields = '__all__'
 
 class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
-    # questions = QuestionTableStructureSerilizer(many=True)
+    questions = QuestionTableStructureSerilizer(many=True)
     class Meta:
             model = AssessmentTableStructure
             fields =  '__all__'
+
+class SubjectTableStructureSerilizer(serializers.ModelSerializer):
+    grade_id = serializers.IntegerField()
+    updateddate = serializers.DateField(allow_null=True)
+    createdby = serializers.IntegerField(allow_null=True)
+    updatedby = serializers.IntegerField(allow_null=True)
+    name = serializers.CharField(allow_null=False, allow_blank=False)
+    subject_code = serializers.CharField(allow_null=True)
+
+
+    def create(self, validated_data):
+        return_data = copy.deepcopy(validated_data)
+        grade_id = GradeTableStructure.objects.get(grade_id=validated_data['grade_id'])
+        SubjectTableStructure.objects.create(name=validated_data['name'],subject_code=validated_data['subject_code'],updateddate=validated_data['updateddate'],createdby=validated_data['createdby'],updatedby=validated_data['updatedby'],grade_id=grade_id)
+        return return_data
+    class Meta:
+            model = SubjectTableStructure
+            fields =  '__all__'
+
+class ChapterTableStructureSerilizer(serializers.ModelSerializer):
+    subject_id = SubjectTableStructureSerilizer()
+    updateddate = serializers.DateField(allow_null=True)
+    createdby = serializers.IntegerField(allow_null=True)
+    updatedby = serializers.IntegerField(allow_null=True)
+    name = serializers.CharField(allow_null=False, allow_blank=False)
+    chapter_code = serializers.CharField(allow_null=True)
+    def create(self, validated_data):
+        return_data = copy.deepcopy(validated_data)
+        subject_id = SubjectTableStructure.objects.get(subject_id=validated_data['subject_id'])
+        ChapterTableStructure.objects.create(name=validated_data['name'],chapter_code=validated_data['chapter_code'],updateddate=validated_data['updateddate'],createdby=validated_data['createdby'],updatedby=validated_data['updatedby'],subject_id=subject_id)
+        return return_data
+    class Meta:
+            model = ChapterTableStructure
+            fields =  '__all__'
+
+class ListSubjectTableStructureSerilizer(serializers.ModelSerializer):
+    class Meta:
+            model = SubjectTableStructure
+            fields =  '__all__'
+class ListChapterTableStructureSerilizer(serializers.ModelSerializer):
+    class Meta:
+            model = ChapterTableStructure
+            fields =  '__all__'
+
+class SubjectListSerilizer(serializers.Serializer):
+    name = serializers.CharField()
+    subject_id = serializers.IntegerField()
+
+class ChapterListSerilizer(serializers.Serializer):
+    name = serializers.CharField()
+    chapter_id = serializers.IntegerField()

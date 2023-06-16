@@ -1,6 +1,8 @@
 from django.urls import path,include
 from .auth import UserRegistration,StudentRegistration,TeacherRegistration,LoginAPI,TeacherDetail,TeacherList, StudentList, StudentDetail
-from .views import Grade_API,Question_API,Assessment_API,GradeDetail,QuestionDetail,AssessmentDetail,QuestionSelectReleventPictureAPI,QuestionMatchThePairsAPI,QuestionMultipleChoiceQuestionsAPI
+from .views import Grade_API,Question_API,Assessment_API,GradeDetail,QuestionDetail,\
+   AssessmentDetail,QuestionSelectReleventPictureAPI,QuestionMatchThePairsAPI,QuestionMultipleChoiceQuestionsAPI,\
+   Chapter_API,ChapterDetail,Subject_API,SubjectDetail,List_Chapter_API,List_Subject_API,SubjectList,ChapterList
 urlpatterns = [
    path('login-user', LoginAPI.as_view(), name='loginUser'),
    
@@ -17,6 +19,19 @@ urlpatterns = [
    # Grade urls
    path('grade-api', Grade_API.as_view(), name='Grade_API'),
    path('grade-detail/<int:pk>/', GradeDetail.as_view(), name='GradeDetail'),
+
+   # chapter urls
+   path('chapter-api', Chapter_API.as_view(), name='Chapter_API'),
+   path('list-chapter-api', List_Chapter_API.as_view(), name='List_Chapter_API'),
+   path('chapter-detail/<int:pk>/', ChapterDetail.as_view(), name='GradeDetail'),
+   path('chapter-list/<int:subject_id>/', ChapterList.as_view(), name='ChapterList'),
+
+
+   # Subject urls
+   path('subject-api', Subject_API.as_view(), name='Subject_API'),
+   path('list-subject-api', List_Subject_API.as_view(), name='Subject_API'),
+   path('subject-detail/<int:pk>/', SubjectDetail.as_view(), name='SubjectDetail'),
+   path('subject-list/<int:grade_id>/', SubjectList.as_view(), name='SubjectList'),
    
     # Question urls
    path('question-api', Question_API.as_view(), name='Question_API'),

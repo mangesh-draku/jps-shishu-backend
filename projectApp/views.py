@@ -3,8 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, filters, status,serializers
-from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture
-from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate
+from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture,ChapterTableStructure,SubjectTableStructure
+from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,\
+    QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,\
+    QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate,ChapterTableStructureSerilizer,\
+    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -160,3 +163,110 @@ class QuestionSelectReleventPictureAPI(generics.ListCreateAPIView):
     permission_classes = (AllowAny,)
     queryset = QuestionSelectReleventPicture.objects.all()
     serializer_class = QuestionSelectReleventPictureSerilizer
+
+class List_Chapter_API(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    queryset = ChapterTableStructure.objects.all()
+    serializer_class = ListChapterTableStructureSerilizer
+
+class List_Subject_API(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    queryset = SubjectTableStructure.objects.all()
+    serializer_class = ListSubjectTableStructureSerilizer
+
+class Chapter_API(APIView):
+    permission_classes = (AllowAny,)
+    # queryset = ChapterTableStructure.objects.all()
+    # serializer_class = ChapterTableStructureSerilizer
+    # def get(self, request, format=None):
+    #     queryset = ChapterTableStructure.objects.all()
+    #     serializer = ChapterTableStructureSerilizer(queryset, many=True)
+    #     return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = ChapterTableStructureSerilizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ChapterDetail(APIView):
+    """
+    Retrieve, update or delete a question instance.
+    """
+    permission_classes = (AllowAny,)
+    def get_object(self, pk):
+        try:
+            return ChapterTableStructure.objects.get(pk=pk)
+        except ChapterTableStructure.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        ChapterTableStructure = self.get_object(pk)
+        serializer = ChapterTableStructureSerilizer(ChapterTableStructure)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        ChapterTableStructure = self.get_object(pk)
+        serializer = ChapterTableStructureSerilizer(ChapterTableStructure, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Subject_API(APIView):
+    permission_classes = (AllowAny,)
+    # queryset = SubjectTableStructure.objects.all()
+    # serializer_class = SubjectTableStructureSerilizer
+    # def get(self, request, format=None):
+    #     queryset = SubjectTableStructure.objects.all()
+    #     serializer = SubjectTableStructureSerilizer(queryset, many=True)
+    #     return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SubjectTableStructureSerilizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class SubjectDetail(APIView):
+    """
+    Retrieve, update or delete a question instance.
+    """
+    permission_classes = (AllowAny,)
+    def get_object(self, pk):
+        try:
+            return SubjectTableStructure.objects.get(pk=pk)
+        except SubjectTableStructure.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        SubjectTableStructure = self.get_object(pk)
+        serializer = SubjectTableStructureSerilizer(SubjectTableStructure)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        SubjectTableStructure = self.get_object(pk)
+        serializer = SubjectTableStructureSerilizer(SubjectTableStructure, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class SubjectList(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = SubjectListSerilizer
+
+    def get_queryset(self):
+        grade_id = self.kwargs['grade_id']
+        return SubjectTableStructure.objects.filter(grade_id=grade_id)
+    
+class ChapterList(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ChapterListSerilizer
+
+    def get_queryset(self):
+        subject_id = self.kwargs['subject_id']
+        return ChapterTableStructure.objects.filter(subject_id=subject_id)

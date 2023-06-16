@@ -145,8 +145,6 @@ class QuestionSelectReleventPicture(models.Model):
     question = models.TextField(max_length=500, blank=True, null=True)
     option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
-    chapter_id = models.IntegerField(default=None, null=True, blank=True)
-    subject_id = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
     
 
@@ -160,8 +158,6 @@ class QuestionMatchThePairs(models.Model):
     question = models.TextField(max_length=500, blank=True, null=True)
     option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
-    chapter_id = models.IntegerField(default=None, null=True, blank=True)
-    subject_id = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
 
 class QuestionMultipleChoiceQuestions(models.Model):
@@ -174,8 +170,6 @@ class QuestionMultipleChoiceQuestions(models.Model):
     question = models.TextField(max_length=500, blank=True, null=True)
     option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
-    chapter_id = models.IntegerField(default=None, null=True, blank=True)
-    subject_id = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
 
 class GradeTableStructure(models.Model):
@@ -192,6 +186,32 @@ class GradeTableStructure(models.Model):
      class Meta:
         db_table = "grade_table_structure"  
         
+class SubjectTableStructure(models.Model):
+    subject_id = models.AutoField(primary_key=True, db_column='subject_id')
+    createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    updateddate = models.DateField(default=None, null=True, blank=True)
+    createdby = models.IntegerField(default=None, null=True, blank=True)
+    updatedby = models.IntegerField(default=None, null=True, blank=True)
+    grade_id = models.ForeignKey(GradeTableStructure, on_delete=models.CASCADE,related_name="grade",null=True,blank=True)
+    name = models.CharField(max_length=255,null=True, default=None)
+    subject_code = models.CharField(max_length=255,null=True, default=None)
+
+    class Meta:
+        db_table = "subject_table_structure"
+
+class ChapterTableStructure(models.Model):
+    chapter_id = models.AutoField(primary_key=True, db_column='chapter_id')
+    createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    updateddate = models.DateField(default=None, null=True, blank=True)
+    createdby = models.IntegerField(default=None, null=True, blank=True)
+    updatedby = models.IntegerField(default=None, null=True, blank=True)
+    subject_id = models.ForeignKey(SubjectTableStructure, on_delete=models.CASCADE,related_name="subject",null=True,blank=True)
+    name = models.CharField(max_length=255,null=True, default=None)
+    chapter_code = models.CharField(max_length=255,null=True, default=None)
+
+    class Meta:
+        db_table = "chapter_table_structure"
+
 class QuestionTableStructure(models.Model):
     question_id = models.AutoField(primary_key=True, db_column='question_id')
     createddate = models.DateTimeField(default=timezone.now, null=True, blank=True)
@@ -199,13 +219,17 @@ class QuestionTableStructure(models.Model):
     createdby = models.IntegerField(default=None, null=True, blank=True)
     updatedby = models.IntegerField(default=None, null=True, blank=True)
     question_type = models.CharField(max_length=255,null=True,default=None)
-    grade_id = models.ForeignKey(GradeTableStructure, on_delete=models.CASCADE,related_name="grade",null=True,blank=True)
+    grade_id = models.IntegerField(default=None, null=True, blank=True)
+    subject_id = models.IntegerField(default=None, null=True, blank=True)
+    assessment = models.ForeignKey(AssessmentTableStructure, on_delete=models.CASCADE,related_name="questions",null=True,blank=True)
+    chapter_id = models.ForeignKey(ChapterTableStructure, on_delete=models.CASCADE,related_name="chapter",null=True,blank=True)
     select_relevent_picture_question = models.ForeignKey(QuestionSelectReleventPicture, on_delete=models.CASCADE,related_name="select_relevent_picture_question",null=True,blank=True)
     match_the_pairs_question = models.ForeignKey(QuestionMatchThePairs, on_delete=models.CASCADE,related_name="match_the_pairs_question",null=True,blank=True)
     multiple_choice_question = models.ForeignKey(QuestionMultipleChoiceQuestions, on_delete=models.CASCADE,related_name="multiple_choice_question",null=True,blank=True)
 
     class Meta:
         db_table = "question_table_structure"
+
 
 
 
