@@ -397,12 +397,14 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
         if "objective" == validated_data['question_type']:
             print("inside 1st")
             objective = validated_data.pop('multiple_choice_question')
+            grade_id = validated_data.pop('grade_id')
+            subject_id = validated_data.pop('subject_id')
             serializer = QuestionMultipleChoiceQuestionsSerilizer(data=objective)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionMultipleChoiceQuestions.objects.get(id=serializer.data['id'])
             chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
-            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',chapter_id=chapter_id)
+            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
 
         elif "matching_question" == validated_data['question_type']:
             matching_question = validated_data.pop('match_the_pairs_question')
@@ -428,7 +430,7 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
         fields = '__all__'
 
 class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
-    questions = QuestionTableStructureSerilizer(many=True)
+    questions = QuestionTableStructureSerilizer(many=True, read_only=True)
     class Meta:
             model = AssessmentTableStructure
             fields =  '__all__'

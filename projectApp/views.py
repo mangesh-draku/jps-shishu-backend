@@ -75,7 +75,8 @@ class Question_API(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors)
+    
 class QuestionDetail(APIView):
     """
     Retrieve, update or delete a question instance.
@@ -167,7 +168,7 @@ class QuestionSelectReleventPictureAPI(generics.ListCreateAPIView):
 class List_Chapter_API(generics.ListAPIView):
     permission_classes = (AllowAny,)
     queryset = ChapterTableStructure.objects.all()
-    serializer_class = ListChapterTableStructureSerilizer
+    serializer_class = ChapterListAllSerializer
 
 class List_Subject_API(generics.ListAPIView):
     permission_classes = (AllowAny,)
@@ -213,7 +214,11 @@ class ChapterDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
+    def delete(self, request, pk, format=None):
+            chapter = self.get_object(pk)
+            chapter.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 class Subject_API(APIView):
     permission_classes = (AllowAny,)
@@ -255,6 +260,11 @@ class SubjectDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None):
+        subject = self.get_object(pk)
+        subject.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class SubjectList(generics.ListAPIView):
     permission_classes = (AllowAny,)
