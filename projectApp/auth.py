@@ -138,6 +138,7 @@ class TeacherDetail(APIView):
     def get(self, request, pk, format=None):
         TeacherTableStructure = self.get_object(pk)
         serializer = TeacherTableStructureSerilizer(TeacherTableStructure)
+        # print("serializer: ", serializer.data)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -167,6 +168,7 @@ class StudentDetail(APIView):
     def get(self, request, pk, format=None):
         StudentTableStructure = self.get_object(pk)
         serializer = StudentTableStructureSerilizer(StudentTableStructure)
+        # print("serializer: ", serializer.data)
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):

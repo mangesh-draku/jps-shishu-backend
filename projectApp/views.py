@@ -7,7 +7,7 @@ from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableSt
 from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,\
     QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,\
     QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate,ChapterTableStructureSerilizer,\
-    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer
+    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -176,13 +176,13 @@ class List_Subject_API(generics.ListAPIView):
 
 class Chapter_API(APIView):
     permission_classes = (AllowAny,)
-    # queryset = ChapterTableStructure.objects.all()
-    # serializer_class = ChapterTableStructureSerilizer
-    # def get(self, request, format=None):
-    #     queryset = ChapterTableStructure.objects.all()
-    #     serializer = ChapterTableStructureSerilizer(queryset, many=True)
-    #     return Response(serializer.data)
-
+    queryset = ChapterTableStructure.objects.all()
+    serializer_class = ChapterTableStructureSerilizer
+    def get(self, request, format=None):
+        queryset = ChapterTableStructure.objects.all()
+        serializer = ChapterListAllSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
     def post(self, request, format=None):
         serializer = ChapterTableStructureSerilizer(data=request.data)
         if serializer.is_valid():
@@ -203,12 +203,12 @@ class ChapterDetail(APIView):
 
     def get(self, request, pk, format=None):
         ChapterTableStructure = self.get_object(pk)
-        serializer = ChapterTableStructureSerilizer(ChapterTableStructure)
+        serializer = ChapterTableStructureSerilizerUpdate(ChapterTableStructure)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         ChapterTableStructure = self.get_object(pk)
-        serializer = ChapterTableStructureSerilizer(ChapterTableStructure, data=request.data)
+        serializer = ChapterTableStructureSerilizerUpdate(ChapterTableStructure, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -217,14 +217,15 @@ class ChapterDetail(APIView):
 
 class Subject_API(APIView):
     permission_classes = (AllowAny,)
-    # queryset = SubjectTableStructure.objects.all()
-    # serializer_class = SubjectTableStructureSerilizer
-    # def get(self, request, format=None):
-    #     queryset = SubjectTableStructure.objects.all()
-    #     serializer = SubjectTableStructureSerilizer(queryset, many=True)
-    #     return Response(serializer.data)
-
+    queryset = SubjectTableStructure.objects.all()
+    serializer_class = SubjectTableStructureSerilizer
+    def get(self, request, format=None):
+        queryset = SubjectTableStructure.objects.all()
+        serializer = SubjectListAllserializer(queryset, many=True)
+        return Response(serializer.data)
+    
     def post(self, request, format=None):
+        print("serializer:", request.data)
         serializer = SubjectTableStructureSerilizer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -244,12 +245,12 @@ class SubjectDetail(APIView):
 
     def get(self, request, pk, format=None):
         SubjectTableStructure = self.get_object(pk)
-        serializer = SubjectTableStructureSerilizer(SubjectTableStructure)
+        serializer = SubjectTableStructureSerilizerUpdate(SubjectTableStructure)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         SubjectTableStructure = self.get_object(pk)
-        serializer = SubjectTableStructureSerilizer(SubjectTableStructure, data=request.data)
+        serializer = SubjectTableStructureSerilizerUpdate(SubjectTableStructure, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

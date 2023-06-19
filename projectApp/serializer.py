@@ -40,8 +40,8 @@ class UserLoginSerializer(serializers.ModelSerializer):
 #         model = StudentTableStructure
 #         fields = '__all__'
         
-class StudentTableStructureSerilizer(serializers.ModelSerializer):
-    student = serializers.CharField(allow_null=True, allow_blank=True)
+class StudentTableStructureSerilizer(Serializer):
+    # student = serializers.CharField(allow_null=True, allow_blank=True)
     firstname = serializers.CharField(allow_null=True, allow_blank=True)
     middlename = serializers.CharField(allow_null=True, allow_blank=True)
     lastname = serializers.CharField(allow_null=True, allow_blank=True)
@@ -133,7 +133,6 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
             internal_data['religion'] = None
         
         return super(StudentTableStructureSerilizer, self).to_internal_value(internal_data)
-    
     def create(self, validated_data):
         request_data = copy.deepcopy(validated_data)
         
@@ -142,6 +141,7 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
                 password = request_data['firstname'][0:4] + \
                     ''.join([random.choice(string.digits) for i in range(0, 4)])
                 password = "dummy@123"
+                
                 user = User.objects.create(username=username, email=validated_data['email'],
                                         phone=validated_data['phone'], is_student=True)
                 user.set_password(password)
@@ -170,6 +170,32 @@ class StudentTableStructureSerilizer(serializers.ModelSerializer):
                     religion=validated_data['religion'],
                 )
                 return request_data
+            
+    def update(self, instance, validated_data):
+        instance.aadhar_number = validated_data.get('aadhar_number', instance.aadhar_number)
+        instance.firstname = validated_data.get('firstname', instance.firstname)
+        instance.middlename = validated_data.get('middlename', instance.middlename)
+        instance.lastname = validated_data.get('lastname', instance.lastname)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.address_line_1 = validated_data.get('address_line_1', instance.address_line_1)
+        instance.country = validated_data.get('country', instance.country)
+        instance.state = validated_data.get('state', instance.state)
+        instance.city = validated_data.get('city', instance.city)
+        instance.pincode = validated_data.get('pincode', instance.pincode)
+        instance.date_of_birth  = validated_data.get('date_of_birth', instance.date_of_birth)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.date_of_admission = validated_data.get('date_of_admission', instance.date_of_admission)
+        instance.age = validated_data.get('age', instance.age)
+        instance.height = validated_data.get('height', instance.height)
+        instance.weight = validated_data.get('weight', instance.weight)
+        instance.blood_group = validated_data.get('blood_group', instance.blood_group)
+        instance.cast_category = validated_data.get('cast_category', instance.cast_category)
+        instance.religion = validated_data.get('religion', instance.religion)
+        
+        instance.save()
+
+        return instance
     class Meta:
         model = StudentTableStructure
         fields = '__all__'
@@ -189,6 +215,7 @@ class TeacherTableStructureSerilizer(Serializer):
     address_line_1=serializers.CharField(allow_null=True, allow_blank=True)
     city=serializers.CharField(allow_null=True, allow_blank=True)
     country=serializers.CharField(allow_null=True, allow_blank=True)
+    date_of_birth=serializers.CharField(allow_null=True, allow_blank=True)
     date_of_joining=serializers.CharField(allow_null=True, allow_blank=True)
     designation=serializers.CharField(allow_null=True, allow_blank=True)
     father_name=serializers.CharField(allow_null=True, allow_blank=True)
@@ -269,6 +296,7 @@ class TeacherTableStructureSerilizer(Serializer):
                     address_line_1=validated_data['address_line_1'],
                     city=validated_data['city'],
                     country=validated_data['country'],
+                    date_of_birth = validated_data['date_of_birth'],
                     date_of_joining=validated_data['date_of_joining'],
                     email=validated_data['email'],
                     designation=validated_data['designation'],
@@ -305,8 +333,11 @@ class TeacherTableStructureSerilizer(Serializer):
         instance.pan_number = validated_data.get('pan_number', instance.pan_number)
         instance.pincode = validated_data.get('pincode', instance.pincode)
         instance.state = validated_data.get('state', instance.state)
+        instance.city = validated_data.get('city', instance.city)
         instance.weight = validated_data.get('weight', instance.weight)
-
+        instance.date_of_birth  = validated_data.get('date_of_birth', instance.date_of_birth)
+        instance.date_of_joining  = validated_data.get('date_of_joining', instance.date_of_joining)
+        
         instance.save()
 
         return instance
@@ -404,33 +435,33 @@ class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
 
 class SubjectTableStructureSerilizer(serializers.ModelSerializer):
     grade_id = serializers.IntegerField()
-    updateddate = serializers.DateField(allow_null=True)
-    createdby = serializers.IntegerField(allow_null=True)
-    updatedby = serializers.IntegerField(allow_null=True)
+    # updateddate = serializers.DateField(allow_null=True)
+    # createdby = serializers.IntegerField(allow_null=True)
+    # updatedby = serializers.IntegerField(allow_null=True)
     name = serializers.CharField(allow_null=False, allow_blank=False)
-    subject_code = serializers.CharField(allow_null=True)
+    # subject_code = serializers.CharField(allow_null=True)
 
 
     def create(self, validated_data):
         return_data = copy.deepcopy(validated_data)
         grade_id = GradeTableStructure.objects.get(grade_id=validated_data['grade_id'])
-        SubjectTableStructure.objects.create(name=validated_data['name'],subject_code=validated_data['subject_code'],updateddate=validated_data['updateddate'],createdby=validated_data['createdby'],updatedby=validated_data['updatedby'],grade_id=grade_id)
+        SubjectTableStructure.objects.create(name=validated_data['name'], grade_id=grade_id)
         return return_data
     class Meta:
             model = SubjectTableStructure
             fields =  '__all__'
 
 class ChapterTableStructureSerilizer(serializers.ModelSerializer):
-    subject_id = SubjectTableStructureSerilizer()
-    updateddate = serializers.DateField(allow_null=True)
-    createdby = serializers.IntegerField(allow_null=True)
-    updatedby = serializers.IntegerField(allow_null=True)
+    subject_id = serializers.IntegerField()
+    # updateddate = serializers.DateField(allow_null=True)
+    # createdby = serializers.IntegerField(allow_null=True)
+    # updatedby = serializers.IntegerField(allow_null=True)
     name = serializers.CharField(allow_null=False, allow_blank=False)
-    chapter_code = serializers.CharField(allow_null=True)
+    # chapter_code = serializers.CharField(allow_null=True)
     def create(self, validated_data):
         return_data = copy.deepcopy(validated_data)
         subject_id = SubjectTableStructure.objects.get(subject_id=validated_data['subject_id'])
-        ChapterTableStructure.objects.create(name=validated_data['name'],chapter_code=validated_data['chapter_code'],updateddate=validated_data['updateddate'],createdby=validated_data['createdby'],updatedby=validated_data['updatedby'],subject_id=subject_id)
+        ChapterTableStructure.objects.create(name=validated_data['name'], subject_id=subject_id)
         return return_data
     class Meta:
             model = ChapterTableStructure
@@ -452,3 +483,49 @@ class SubjectListSerilizer(serializers.Serializer):
 class ChapterListSerilizer(serializers.Serializer):
     name = serializers.CharField()
     chapter_id = serializers.IntegerField()
+    
+class SubjectListAllserializer(serializers.ModelSerializer):
+    grade_id = GradeTableStructureSerilizer()
+    class Meta:
+            model = SubjectTableStructure
+            fields =  '__all__'
+            
+class SubjectTableStructureSerilizerForChapter(serializers.ModelSerializer):
+    grade_id = GradeTableStructureSerilizer()
+    class Meta:
+            model = SubjectTableStructure
+            fields =  '__all__'
+            
+class ChapterListAllSerializer(serializers.ModelSerializer):
+    subject_id = SubjectTableStructureSerilizerForChapter()
+    class Meta:
+            model = ChapterTableStructure
+            fields =  '__all__'
+            
+class ChapterTableStructureSerilizerUpdate(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.updateddate = validated_data.get('updateddate', instance.updateddate)
+        instance.createdby = validated_data.get('createdby', instance.createdby)
+        instance.updatedby = validated_data.get('updatedby', instance.updatedby)
+        instance.subject_id = validated_data.get('subject_id', instance.subject_id)
+        instance.chapter_code = validated_data.get('chapter_code', instance.chapter_code)
+        instance.save()
+        return instance
+    class Meta:
+            model = ChapterTableStructure
+            fields =  '__all__'
+            
+class SubjectTableStructureSerilizerUpdate(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.updateddate = validated_data.get('updateddate', instance.updateddate)
+        instance.createdby = validated_data.get('createdby', instance.createdby)
+        instance.updatedby = validated_data.get('updatedby', instance.updatedby)
+        instance.grade_id = validated_data.get('grade_id', instance.grade_id)
+        instance.subject_code = validated_data.get('subject_code', instance.subject_code)
+        instance.save()
+        return instance
+    class Meta:
+            model = SubjectTableStructure
+            fields =  '__all__'
