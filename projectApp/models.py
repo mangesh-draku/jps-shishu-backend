@@ -122,7 +122,7 @@ class AssessmentTableStructure(models.Model):
     end_time= models.DateTimeField(default=None, null=True, blank=True)
     date= models.DateTimeField(default=timezone.now, null=True, blank=True)
     marks= models.IntegerField(default=None, null=True, blank=True)
-    grade= models.IntegerField(default=None, null=True, blank=True)
+    grade_id= models.IntegerField(default=None, null=True, blank=True)
     test_duration= models.IntegerField(default=None, null=True, blank=True)
     title = models.CharField(max_length=255,null=True,default="Assessment")
     chapter_id = models.IntegerField(default=None, null=True, blank=True)
