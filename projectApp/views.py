@@ -7,7 +7,7 @@ from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableSt
 from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,\
     QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,\
     QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate,ChapterTableStructureSerilizer,\
-    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate
+    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate,AssessmentTableStructureSerilizerCreate
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -15,6 +15,7 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth import login,authenticate,logout
 from rest_framework_simplejwt.tokens import RefreshToken
+from django_filters.rest_framework import DjangoFilterBackend
 from .utils import get_user_object
 import copy
 from django.http import Http404
@@ -106,6 +107,13 @@ class QuestionDetail(APIView):
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+class QuestionListAPI(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['question_type', 'chapter_id']
+    queryset = QuestionTableStructure.objects.all()
+    serializer_class = QuestionTableStructureSerilizer
+      
 class Assessment_API(APIView):
     permission_classes = (AllowAny,)
     def get(self, request, format=None):
@@ -114,7 +122,7 @@ class Assessment_API(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = AssessmentTableStructureSerilizer(data=request.data)
+        serializer = AssessmentTableStructureSerilizerCreate(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

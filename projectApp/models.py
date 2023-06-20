@@ -111,27 +111,6 @@ class TeacherTableStructure(models.Model):
     class Meta:
         db_table = "teacher_table_structure"
 
-class AssessmentTableStructure(models.Model):
-    name= models.CharField(max_length=255,null=True,default=None)
-    standard= models.CharField(max_length=255,null=True,default=None)
-    subject= models.CharField(max_length=255,null=True,default=None)
-    subject_id= models.IntegerField(default=None, null=True, blank=True)
-    teacher_name= models.CharField(max_length=255,null=True,default=None)
-    question_type= models.CharField(max_length=255,null=True,default=None)
-    date_time= models.DateTimeField(default=None, null=True, blank=True)
-    end_time= models.DateTimeField(default=None, null=True, blank=True)
-    date= models.DateTimeField(default=timezone.now, null=True, blank=True)
-    marks= models.IntegerField(default=None, null=True, blank=True)
-    grade_id= models.IntegerField(default=None, null=True, blank=True)
-    test_duration= models.IntegerField(default=None, null=True, blank=True)
-    title = models.CharField(max_length=255,null=True,default="Assessment")
-    chapter_id = models.IntegerField(default=None, null=True, blank=True)
-    test_type = models.CharField(max_length=255,null=True,default=None)
-    test_category = models.CharField(max_length=255,null=True,default=None)
-    int_ext_type = models.CharField(max_length=255,null=True,default=None)
-
-    class Meta:
-        db_table = "assessment_table_structure"
 
 
 
@@ -211,6 +190,28 @@ class ChapterTableStructure(models.Model):
 
     class Meta:
         db_table = "chapter_table_structure"
+
+class AssessmentTableStructure(models.Model):
+    name= models.CharField(max_length=255,null=True,default=None)
+    standard= models.CharField(max_length=255,null=True,default=None)
+    subject= models.CharField(max_length=255,null=True,default=None)
+    subject_id= models.IntegerField(default=None, null=True, blank=True)
+    teacher_id = models.ForeignKey(TeacherTableStructure, on_delete=models.CASCADE,related_name="teacher_assessment",null=True,blank=True)
+    question_type= models.CharField(max_length=255,null=True,default=None)
+    date_time= models.DateTimeField(default=None, null=True, blank=True)
+    end_time= models.DateTimeField(default=None, null=True, blank=True)
+    date= models.DateTimeField(default=timezone.now, null=True, blank=True)
+    marks= models.IntegerField(default=None, null=True, blank=True)
+    grade_id= models.IntegerField(default=None, null=True, blank=True)
+    test_duration= models.IntegerField(default=None, null=True, blank=True)
+    title = models.CharField(max_length=255,null=True,default="Assessment")
+    chapter_id = models.ForeignKey(ChapterTableStructure, on_delete=models.CASCADE,related_name="chapter_assesment",null=True,blank=True)
+    test_type = models.CharField(max_length=255,null=True,default=None)
+    test_category = models.CharField(max_length=255,null=True,default=None)
+    int_ext_type = models.CharField(max_length=255,null=True,default=None)
+
+    class Meta:
+        db_table = "assessment_table_structure"
 
 class QuestionTableStructure(models.Model):
     question_id = models.AutoField(primary_key=True, db_column='question_id')

@@ -429,11 +429,6 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
         model = QuestionTableStructure
         fields = '__all__'
 
-class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
-    questions = QuestionTableStructureSerilizer(many=True, read_only=True)
-    class Meta:
-            model = AssessmentTableStructure
-            fields =  '__all__'
 
 class SubjectTableStructureSerilizer(serializers.ModelSerializer):
     grade_id = serializers.IntegerField()
@@ -503,7 +498,31 @@ class ChapterListAllSerializer(serializers.ModelSerializer):
     class Meta:
             model = ChapterTableStructure
             fields =  '__all__'
+
+class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
+    chapter_id = ChapterListAllSerializer()
+    questions = QuestionTableStructureSerilizer(many=True, read_only=True)
+    class Meta:
+            model = AssessmentTableStructure
+            fields =  '__all__'
             
+class AssessmentTableStructureSerilizerCreate(serializers.ModelSerializer):
+    chapter_id = serializers.IntegerField()
+    questions =  serializers.ListField()
+    def create(self, validated_data):
+        return_data = copy.deepcopy(validated_data)
+
+        related_ids = validated_data.get('questions', [])
+        related_objects = QuestionTableStructure.objects.filter(pk__in=related_ids)
+
+        chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
+        assessment = AssessmentTableStructure.objects.create(name=validated_data['name'], chapter_id=chapter_id,standard=validated_data['standard'],subject=validated_data['subject'],teacher_id=validated_data['teacher_id'],question_type=validated_data['question_type'],date_time=validated_data['date_time'],end_time=validated_data['end_time'],marks=validated_data['marks'],grade_id=validated_data['grade_id'],test_duration=validated_data['test_duration'],title=validated_data['title'],test_type=validated_data['test_type'],test_category=validated_data['test_category'],int_ext_type=validated_data['int_ext_type'])
+        assessment.questions.set(related_objects)
+        return return_data
+    class Meta:
+            model = AssessmentTableStructure
+            fields =  '__all__'
+
 class ChapterTableStructureSerilizerUpdate(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
