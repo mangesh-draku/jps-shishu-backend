@@ -379,14 +379,7 @@ class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class QuestionTableStructureSerilizer(serializers.ModelSerializer):
-    match_the_pairs_question = QuestionMatchThePairsSerilizer(read_only=True)
-    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(read_only=True)
-    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=True)
 
-    class Meta:
-        model = QuestionTableStructure
-        fields = '__all__'
 
 class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
     match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False)
@@ -503,7 +496,16 @@ class ChapterListAllSerializer(serializers.ModelSerializer):
     class Meta:
             model = ChapterTableStructure
             fields =  ["name","chapter_id","subject_id","chapter_code"]
+class QuestionTableStructureSerilizer(serializers.ModelSerializer):
+    match_the_pairs_question = QuestionMatchThePairsSerilizer(read_only=True)
+    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(read_only=True)
+    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=True)
+    chapter_id = ChapterListAllSerializer()
 
+    class Meta:
+        model = QuestionTableStructure
+        fields = '__all__'
+        
 class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
     chapter_id = ChapterListAllSerializer()
     teacher_id = TeacherShortProfileSerilizer()
