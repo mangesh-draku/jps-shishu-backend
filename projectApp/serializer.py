@@ -345,10 +345,7 @@ class TeacherTableStructureSerilizer(Serializer):
         model = TeacherTableStructure
         fields = '__all__'
     
-class TeacherSerilizer(serializers.ModelSerializer):
-     class Meta:
-        model = TeacherTableStructure
-        fields = '__all__'
+
 
 class TeacherShortProfileSerilizer(serializers.ModelSerializer):
      class Meta:
@@ -514,6 +511,12 @@ class AssessmentTableStructureSerilizer(serializers.ModelSerializer):
             model = AssessmentTableStructure
             fields =  '__all__'
             
+class TeacherSerilizer(serializers.ModelSerializer):
+    teacher_assessment = AssessmentTableStructureSerilizer(many=True)
+    class Meta:
+        model = TeacherTableStructure
+        fields = '__all__'
+        
 class AssessmentTableStructureSerilizerCreate(serializers.ModelSerializer):
     chapter_id = serializers.IntegerField()
     teacher_id = serializers.IntegerField()
