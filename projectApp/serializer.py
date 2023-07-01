@@ -5,6 +5,8 @@ import random
 from rest_framework.serializers import ModelSerializer, Serializer
 from django.db import transaction
 import copy
+from .utils import upload_file_to_s3
+
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print("validated data",validated_data)
@@ -358,8 +360,143 @@ class GradeTableStructureSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuestionMatchThePairsSerilizer(serializers.ModelSerializer):
+    
+    question1 = serializers.FileField(allow_null=True)
+    question2 = serializers.FileField(allow_null=True)
+    question3 = serializers.FileField(allow_null=True)
+    question4 = serializers.FileField(allow_null=True)
+    question5 = serializers.FileField(allow_null=True)
+    question6 = serializers.FileField(allow_null=True)
+    option1 = serializers.FileField(allow_null=True)
+    option2 = serializers.FileField(allow_null=True)
+    option3 = serializers.FileField(allow_null=True)
+    option4 = serializers.FileField(allow_null=True)
+    option5 = serializers.FileField(allow_null=True)
+    option6 = serializers.FileField(allow_null=True)
+    question = serializers.CharField(allow_null=True, allow_blank=True)
+    grade = serializers.CharField(allow_null=True)
+    subject_name = serializers.CharField(allow_null=True)
+    chapter_name = serializers.CharField(allow_null=True)
+    option_count = serializers.CharField(allow_null=True)
+    mark = serializers.IntegerField(allow_null=True)
+    answer = serializers.CharField(allow_null=True) 
 
+
+    # def to_internal_value(self, data):
+    #     internal_data = copy.deepcopy(data)
+    #     if internal_data.get("question1", None) == None:
+    #         internal_data['question1'] = None
+            
+    #     if internal_data.get("question2", None) == None:
+    #         internal_data['question2'] = None
+        
+    #     if internal_data.get("question3", None) == None:
+    #         internal_data['question3'] = None
+
+    #     if internal_data.get("question4", None) == None:
+    #         internal_data['question4'] = None
+        
+    #     if internal_data.get("question5", None) == None:
+    #         internal_data['question5'] = None
+
+    #     if internal_data.get("question6", None) == None:
+    #         internal_data['question6'] = None
+
+    #     if internal_data.get("option1", None) == None:
+    #         internal_data['option1'] = None
+        
+    #     if internal_data.get("option2", None) == None:
+    #         internal_data['option2'] = None
+        
+    #     if internal_data.get("option3", None) == None:
+    #         internal_data['option3'] = None
+        
+    #     if internal_data.get("option4", None) == None:
+    #         internal_data['option4'] = None
+        
+    #     if internal_data.get("option5", None) == None:
+    #         internal_data['option5'] = None
+        
+    #     if internal_data.get("option6", None) == None:
+    #         internal_data['option6'] = None
+        
+    #     if internal_data.get("subject_name", None) == None:
+    #         internal_data['subject_name'] = None
+        
+    #     if internal_data.get("grade", None) == None:
+    #         internal_data['grade'] = None
+        
+    #     if internal_data.get("chapter_name", None) == None:
+    #         internal_data['chapter_name'] = None
+        
+    #     if internal_data.get("option_count", None) == None:
+    #         internal_data['option_count'] = None
+
+    #     if internal_data.get("mark", None) == None:
+    #         internal_data['mark'] = None   
+        
+    #     if internal_data.get("answer", None) == None:
+    #         internal_data['answer'] = None  
+
+    #     # if internal_data.get("question", None) == None:
+    #     #      internal_data['question'] = None  
+
+    #     return super(QuestionMatchThePairsSerilizer, self).to_internal_value(internal_data)
+    
+    def create(self, validated_data):
+        request_data = copy.deepcopy(validated_data)
+
+        QuestionMatchThePairs.objects.create(
+                    question1=upload_file_to_s3(validated_data['question1']),
+                    question2=upload_file_to_s3(validated_data['question2']),
+                    question3=upload_file_to_s3(validated_data['question3']),
+                    question4=upload_file_to_s3(validated_data['question4']),
+                    question5=upload_file_to_s3(validated_data['question5']),
+                    question6=upload_file_to_s3(validated_data['question6']),
+                    option1=upload_file_to_s3(validated_data['option1']),
+                    option2=upload_file_to_s3(validated_data['option2']),
+                    option3=upload_file_to_s3(validated_data['option3']),
+                    option4=upload_file_to_s3(validated_data['option4']),
+                    option5=upload_file_to_s3(validated_data['option5']),
+                    option6=upload_file_to_s3(validated_data['option6']),
+                    question=validated_data['question'],
+                    subject_name=validated_data['subject_name'],
+                    grade=validated_data['grade'],
+                    chapter_name=validated_data['chapter_name'],
+                    option_count=validated_data['option_count'],
+                    mark=validated_data['mark'],
+                    answer=validated_data['answer'],
+                )
+        return request_data
+    
+    def update(self, instance, validated_data):
+        instance.question1 = validated_data.get('question1', instance.question1)
+        instance.question2 = validated_data.get('question2', instance.question2)
+        instance.question3 = validated_data.get('question3', instance.question3)
+        instance.question4 = validated_data.get('question4', instance.question4)
+        instance.question5 = validated_data.get('question5', instance.question5)
+        instance.question6 = validated_data.get('question6', instance.question6)
+        instance.question = validated_data.get('question', instance.question)
+        instance.option1 = validated_data.get('option1', instance.option1)
+        instance.option2 = validated_data.get('option2', instance.option2)
+        instance.option3 = validated_data.get('option3', instance.option3)
+        instance.option4 = validated_data.get('option4', instance.option4)
+        instance.option5 = validated_data.get('option5', instance.option5)
+        instance.option6 = validated_data.get('option6', instance.option6 )
+        instance.subject_name = validated_data.get('subject_name', instance.subject_name)
+        instance.grade = validated_data.get('grade', instance.grade)
+        instance.chapter_name = validated_data.get('chapter_name', instance.chapter_name)
+        instance.option_count = validated_data.get('option_count', instance.option_count)
+        instance.mark = validated_data.get('mark', instance.mark)
+        instance.answer = validated_data.get('answer', instance.answer)
+         
+        instance.save()
+
+        return instance
+             
+    
     class Meta:
+      
         model = QuestionMatchThePairs
         fields = '__all__'
 

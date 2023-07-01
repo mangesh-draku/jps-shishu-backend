@@ -64,19 +64,21 @@ class GradeDetail(APIView):
         GradeTableStructure.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-class Question_API(APIView):
+class Question_API(generics.CreateAPIView):
     permission_classes = (AllowAny,)
-    def get(self, request, format=None):
-        queryset = QuestionTableStructure.objects.all()
-        serializer = QuestionTableStructureSerilizer(queryset, many=True)
-        return Response(serializer.data)
+    queryset=QuestionTableStructure.objects.all()
+    serializer_class=QuestionTableStructureSerilizerCreate
+    # def get(self, request, format=None):
+    #     queryset = QuestionTableStructure.objects.all()
+    #     serializer = QuestionTableStructureSerilizer(queryset, many=True)
+    #     return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = QuestionTableStructureSerilizerCreate(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors)
+    # def post(self, request, format=None):
+    #     serializer = QuestionTableStructureSerilizerCreate(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors)
     
 class QuestionDetail(APIView):
     """

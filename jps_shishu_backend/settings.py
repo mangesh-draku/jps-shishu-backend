@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'projectApp',
-    'corsheaders'
+    'corsheaders',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,18 @@ CORS_ALLOWED_ORIGINS = [
 'http://localhost:3000',
 'http://127.0.0.1:8000',
 ]
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = 'AKIAZLMDRPIIR64EI6HA'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'jps-shishu'
+AWS_S3_REGION_NAME = 'ap-south-1'  
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400',}
+AWS_LOCATION = 'static'
+# Add the S3 static and media URLs
+STATIC_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL = STATIC_URL + 'media/'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

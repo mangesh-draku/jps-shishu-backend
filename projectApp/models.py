@@ -125,9 +125,17 @@ class QuestionSelectReleventPicture(models.Model):
     option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
+    class Meta:
+        db_table = "select_relevent_picture_table_structure"
     
 
 class QuestionMatchThePairs(models.Model):
+    question1 = models.TextField(max_length=500, blank=True, null=True)
+    question2 = models.TextField(max_length=500, blank=True, null=True)
+    question3 = models.TextField(max_length=500, blank=True, null=True)
+    question4 = models.TextField(max_length=500, blank=True, null=True)
+    question5 = models.TextField(max_length=500, blank=True, null=True)
+    question6 = models.TextField(max_length=500, blank=True, null=True)
     option1 = models.TextField(max_length=500, blank=True, null=True)
     option2 = models.TextField(max_length=500, blank=True, null=True)
     option3 = models.TextField(max_length=500, blank=True, null=True)
@@ -138,6 +146,12 @@ class QuestionMatchThePairs(models.Model):
     option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
+    chapter_name = models.CharField(max_length=255, null=True, default=None)
+    grade = models.CharField(max_length=255, null=True, default=None)
+    subject_name = models.CharField(max_length=255, null=True, default=None)
+    class Meta:
+        db_table = "match_the_pair_table_structure"
+
 
 class QuestionMultipleChoiceQuestions(models.Model):
     option1 = models.TextField(max_length=500, blank=True, null=True)
@@ -150,6 +164,9 @@ class QuestionMultipleChoiceQuestions(models.Model):
     option_count = models.TextField(max_length=500, blank=True, null=True)
     mark = models.IntegerField(default=None, null=True, blank=True)
     answer = models.CharField(max_length=255, null=True, default=None)
+    class Meta:
+        db_table = "multiple_choice_question_table_structure"
+
 
 class GradeTableStructure(models.Model):
      grade_id=models.AutoField(primary_key=True, db_column='grade_id')
