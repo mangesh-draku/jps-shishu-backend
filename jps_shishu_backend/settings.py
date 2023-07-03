@@ -33,12 +33,7 @@ SECRET_KEY = 'django-insecure-&x)ebzs^!1p=h+v^-pzb7nq-#&w&jls!^5*o%tu+h*1-n6hw_7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get("DEBUG") == "True"
-# DEBUG = True
-
-# storage credentials
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+DEBUG = True
 
 # storage credentials
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
@@ -63,7 +58,6 @@ INSTALLED_APPS = [
     'django_filters',
     'projectApp',
     'corsheaders',
-    'storages',
 ]
 
 MIDDLEWARE = [
