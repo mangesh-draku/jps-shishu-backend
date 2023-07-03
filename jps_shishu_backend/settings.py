@@ -35,13 +35,17 @@ SECRET_KEY = 'django-insecure-&x)ebzs^!1p=h+v^-pzb7nq-#&w&jls!^5*o%tu+h*1-n6hw_7
 # DEBUG = os.environ.get("DEBUG") == "True"
 # DEBUG = True
 
-DEBUG = False
-TEMPLATE_DEBUG = False
+# storage credentials
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 
+# storage credentials
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 
-# ALLOWED_HOSTS = []
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'projectApp.User'
 # Application definition

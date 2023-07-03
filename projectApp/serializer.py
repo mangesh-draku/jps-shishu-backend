@@ -6,7 +6,6 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from django.db import transaction
 import copy
 from .utils import upload_file_to_s3
-
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print("validated data",validated_data)
@@ -360,141 +359,36 @@ class GradeTableStructureSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuestionMatchThePairsSerilizer(serializers.ModelSerializer):
-    
-    question1 = serializers.FileField(allow_null=True)
-    question2 = serializers.FileField(allow_null=True)
-    question3 = serializers.FileField(allow_null=True)
-    question4 = serializers.FileField(allow_null=True)
-    question5 = serializers.FileField(allow_null=True)
-    question6 = serializers.FileField(allow_null=True)
     option1 = serializers.FileField(allow_null=True)
     option2 = serializers.FileField(allow_null=True)
     option3 = serializers.FileField(allow_null=True)
     option4 = serializers.FileField(allow_null=True)
     option5 = serializers.FileField(allow_null=True)
     option6 = serializers.FileField(allow_null=True)
-    question = serializers.CharField(allow_null=True, allow_blank=True)
-    grade = serializers.CharField(allow_null=True)
-    subject_name = serializers.CharField(allow_null=True)
-    chapter_name = serializers.CharField(allow_null=True)
-    option_count = serializers.CharField(allow_null=True)
-    mark = serializers.IntegerField(allow_null=True)
-    answer = serializers.CharField(allow_null=True) 
-
-
-    # def to_internal_value(self, data):
-    #     internal_data = copy.deepcopy(data)
-    #     if internal_data.get("question1", None) == None:
-    #         internal_data['question1'] = None
-            
-    #     if internal_data.get("question2", None) == None:
-    #         internal_data['question2'] = None
-        
-    #     if internal_data.get("question3", None) == None:
-    #         internal_data['question3'] = None
-
-    #     if internal_data.get("question4", None) == None:
-    #         internal_data['question4'] = None
-        
-    #     if internal_data.get("question5", None) == None:
-    #         internal_data['question5'] = None
-
-    #     if internal_data.get("question6", None) == None:
-    #         internal_data['question6'] = None
-
-    #     if internal_data.get("option1", None) == None:
-    #         internal_data['option1'] = None
-        
-    #     if internal_data.get("option2", None) == None:
-    #         internal_data['option2'] = None
-        
-    #     if internal_data.get("option3", None) == None:
-    #         internal_data['option3'] = None
-        
-    #     if internal_data.get("option4", None) == None:
-    #         internal_data['option4'] = None
-        
-    #     if internal_data.get("option5", None) == None:
-    #         internal_data['option5'] = None
-        
-    #     if internal_data.get("option6", None) == None:
-    #         internal_data['option6'] = None
-        
-    #     if internal_data.get("subject_name", None) == None:
-    #         internal_data['subject_name'] = None
-        
-    #     if internal_data.get("grade", None) == None:
-    #         internal_data['grade'] = None
-        
-    #     if internal_data.get("chapter_name", None) == None:
-    #         internal_data['chapter_name'] = None
-        
-    #     if internal_data.get("option_count", None) == None:
-    #         internal_data['option_count'] = None
-
-    #     if internal_data.get("mark", None) == None:
-    #         internal_data['mark'] = None   
-        
-    #     if internal_data.get("answer", None) == None:
-    #         internal_data['answer'] = None  
-
-    #     # if internal_data.get("question", None) == None:
-    #     #      internal_data['question'] = None  
-
-    #     return super(QuestionMatchThePairsSerilizer, self).to_internal_value(internal_data)
-    
+    question1 = serializers.FileField(allow_null=True)
+    question2 = serializers.FileField(allow_null=True)
+    question3 = serializers.FileField(allow_null=True)
+    question4 = serializers.FileField(allow_null=True)
+    question5 = serializers.FileField(allow_null=True)
+    question6 = serializers.FileField(allow_null=True)
     def create(self, validated_data):
-        request_data = copy.deepcopy(validated_data)
-
-        QuestionMatchThePairs.objects.create(
-                    question1=upload_file_to_s3(validated_data['question1']),
-                    question2=upload_file_to_s3(validated_data['question2']),
-                    question3=upload_file_to_s3(validated_data['question3']),
-                    question4=upload_file_to_s3(validated_data['question4']),
-                    question5=upload_file_to_s3(validated_data['question5']),
-                    question6=upload_file_to_s3(validated_data['question6']),
-                    option1=upload_file_to_s3(validated_data['option1']),
-                    option2=upload_file_to_s3(validated_data['option2']),
-                    option3=upload_file_to_s3(validated_data['option3']),
-                    option4=upload_file_to_s3(validated_data['option4']),
-                    option5=upload_file_to_s3(validated_data['option5']),
-                    option6=upload_file_to_s3(validated_data['option6']),
-                    question=validated_data['question'],
-                    subject_name=validated_data['subject_name'],
-                    grade=validated_data['grade'],
-                    chapter_name=validated_data['chapter_name'],
-                    option_count=validated_data['option_count'],
-                    mark=validated_data['mark'],
-                    answer=validated_data['answer'],
-                )
-        return request_data
-    
-    def update(self, instance, validated_data):
-        instance.question1 = validated_data.get('question1', instance.question1)
-        instance.question2 = validated_data.get('question2', instance.question2)
-        instance.question3 = validated_data.get('question3', instance.question3)
-        instance.question4 = validated_data.get('question4', instance.question4)
-        instance.question5 = validated_data.get('question5', instance.question5)
-        instance.question6 = validated_data.get('question6', instance.question6)
-        instance.question = validated_data.get('question', instance.question)
-        instance.option1 = validated_data.get('option1', instance.option1)
-        instance.option2 = validated_data.get('option2', instance.option2)
-        instance.option3 = validated_data.get('option3', instance.option3)
-        instance.option4 = validated_data.get('option4', instance.option4)
-        instance.option5 = validated_data.get('option5', instance.option5)
-        instance.option6 = validated_data.get('option6', instance.option6 )
-        instance.subject_name = validated_data.get('subject_name', instance.subject_name)
-        instance.grade = validated_data.get('grade', instance.grade)
-        instance.chapter_name = validated_data.get('chapter_name', instance.chapter_name)
-        instance.option_count = validated_data.get('option_count', instance.option_count)
-        instance.mark = validated_data.get('mark', instance.mark)
-        instance.answer = validated_data.get('answer', instance.answer)
-         
-        instance.save()
+        file_fields = [
+            'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
+            'question1', 'question2', 'question3', 'question4', 'question5', 'question6'
+        ]
+        for field_name in file_fields:
+            file_obj = validated_data.pop(field_name, None)
+            if file_obj:
+                filename = upload_file_to_s3(file_obj)
+                validated_data[field_name] = filename 
+        instance = QuestionMatchThePairs.objects.create(**validated_data)
 
         return instance
-             
-    
+    class Meta:
+        model = QuestionMatchThePairs
+        fields = '__all__'
+
+class QuestionMatchThePairsSerilizerView(serializers.ModelSerializer):
     class Meta:
       
         model = QuestionMatchThePairs
@@ -516,16 +410,17 @@ class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
 
 
 class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
-    match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False)
-    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False)
-    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False)
+    match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False,required=False)
+    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False,required=False)
+    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False,required=False)
     chapter_id = serializers.IntegerField()
     # grade = GradeTableStructureSerilizer(read_only=False)
 
     def create(self, validated_data):
-        return_data = copy.deepcopy(validated_data)
+        # print("validated_data*******",validated_data)
+        # return_data = copy.deepcopy(validated_data)
         # return super().create(validated_data)
-        print("return_data",return_data)
+        # print("return_data",return_data)
         if "objective" == validated_data['question_type']:
             print("inside 1st")
             objective = validated_data.pop('multiple_choice_question')
@@ -535,28 +430,36 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionMultipleChoiceQuestions.objects.get(id=serializer.data['id'])
+            print("id**************",type(id))
             chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
-            QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
+            que = QuestionTableStructure.objects.create(multiple_choice_question=id,question_type='objective',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
 
         elif "matching_question" == validated_data['question_type']:
+            print("inside matching_question")
             matching_question = validated_data.pop('match_the_pairs_question')
+            grade_id = validated_data.pop('grade_id')
+            subject_id = validated_data.pop('subject_id')
             serializer = QuestionMatchThePairsSerilizer(data=matching_question)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionMatchThePairs.objects.get(id=serializer.data['id'])
             chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
-            QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question',chapter_id=chapter_id)
+            # id = QuestionMatchThePairsSerilizerRead(id)
+            print("id**************",type(id))
+            que = QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
 
         elif "relevent_picture" == validated_data['question_type']:
             relevent_picture = validated_data.pop('select_relevent_picture_question')
+            grade_id = validated_data.pop('grade_id')
+            subject_id = validated_data.pop('subject_id')
             serializer = QuestionSelectReleventPictureSerilizer(data=relevent_picture)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionSelectReleventPicture.objects.get(id=serializer.data['id'])
             chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
-            QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture',chapter_id=chapter_id)
-            
-        return return_data
+            que = QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
+        
+        return que
     class Meta:
         model = QuestionTableStructure
         fields = '__all__'
@@ -631,7 +534,7 @@ class ChapterListAllSerializer(serializers.ModelSerializer):
             model = ChapterTableStructure
             fields =  ["name","chapter_id","subject_id","chapter_code"]
 class QuestionTableStructureSerilizer(serializers.ModelSerializer):
-    match_the_pairs_question = QuestionMatchThePairsSerilizer(read_only=True)
+    match_the_pairs_question = QuestionMatchThePairsSerilizerView(read_only=True)
     multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(read_only=True)
     select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=True)
     chapter_id = ChapterListAllSerializer()
