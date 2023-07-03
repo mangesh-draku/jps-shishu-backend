@@ -409,9 +409,9 @@ class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
 
 
 class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
-    match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False)
-    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False)
-    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False)
+    match_the_pairs_question = QuestionMatchThePairsSerilizer(many=False,required=False)
+    multiple_choice_question = QuestionMultipleChoiceQuestionsSerilizer(many=False,required=False)
+    select_relevent_picture_question = QuestionSelectReleventPictureSerilizer(read_only=False,required=False)
     chapter_id = serializers.IntegerField()
     # grade = GradeTableStructureSerilizer(read_only=False)
 

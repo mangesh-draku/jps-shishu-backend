@@ -75,7 +75,7 @@ class Question_API(APIView):
         serializer = QuestionTableStructureSerilizerCreate(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response( status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
     
 class QuestionDetail(APIView):
