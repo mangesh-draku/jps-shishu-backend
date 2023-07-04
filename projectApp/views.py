@@ -64,7 +64,7 @@ class GradeDetail(APIView):
         GradeTableStructure.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-class Question_API(generics.CreateAPIView):
+class Question_API(APIView):
     permission_classes = (AllowAny,)
     # queryset=QuestionTableStructure.objects.all()
     # serializer_class=QuestionTableStructureSerilizerCreate
