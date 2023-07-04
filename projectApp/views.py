@@ -7,7 +7,7 @@ from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableSt
 from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,\
     QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,\
     QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate,ChapterTableStructureSerilizer,\
-    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate,AssessmentTableStructureSerilizerCreate
+    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate,AssessmentTableStructureSerilizerCreate,TeacherAsessessmentSerializer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -75,6 +75,7 @@ class Question_API(APIView):
 
     def post(self, request, format=None):
         serializer = QuestionTableStructureSerilizerCreate(data=request.data)
+        print("serializer",serializer)
         if serializer.is_valid():
             serializer.save()
             return Response( status=status.HTTP_201_CREATED)
@@ -291,3 +292,11 @@ class ChapterList(generics.ListAPIView):
     def get_queryset(self):
         subject_id = self.kwargs['subject_id']
         return ChapterTableStructure.objects.filter(subject_id=subject_id)
+
+class TeacherAssessmentList(generics.ListAPIView):
+    permission_classes=(AllowAny,)
+    serializer_class=TeacherAsessessmentSerializer
+
+    def get_queryset(self):
+        teacher_id=self.kwargs['teacher_id']
+        return AssessmentTableStructure.objects.filter(teacher_id=teacher_id)

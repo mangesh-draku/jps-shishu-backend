@@ -359,31 +359,31 @@ class GradeTableStructureSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuestionMatchThePairsSerilizer(serializers.ModelSerializer):
-    option1 = serializers.FileField(allow_null=True)
-    option2 = serializers.FileField(allow_null=True)
-    option3 = serializers.FileField(allow_null=True)
-    option4 = serializers.FileField(allow_null=True)
-    option5 = serializers.FileField(allow_null=True)
-    option6 = serializers.FileField(allow_null=True)
-    question1 = serializers.FileField(allow_null=True)
-    question2 = serializers.FileField(allow_null=True)
-    question3 = serializers.FileField(allow_null=True)
-    question4 = serializers.FileField(allow_null=True)
-    question5 = serializers.FileField(allow_null=True)
-    question6 = serializers.FileField(allow_null=True)
-    def create(self, validated_data):
-        file_fields = [
-            'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
-            'question1', 'question2', 'question3', 'question4', 'question5', 'question6'
-        ]
-        for field_name in file_fields:
-            file_obj = validated_data.pop(field_name, None)
-            if file_obj:
-                filename = upload_file_to_s3(file_obj)
-                validated_data[field_name] = filename 
-        instance = QuestionMatchThePairs.objects.create(**validated_data)
+    # option1 = serializers.FileField(allow_null=True)
+    # option2 = serializers.FileField(allow_null=True)
+    # option3 = serializers.FileField(allow_null=True)
+    # option4 = serializers.FileField(allow_null=True)
+    # option5 = serializers.FileField(allow_null=True)
+    # option6 = serializers.FileField(allow_null=True)
+    # question1 = serializers.FileField(allow_null=True)
+    # question2 = serializers.FileField(allow_null=True)
+    # question3 = serializers.FileField(allow_null=True)
+    # question4 = serializers.FileField(allow_null=True)
+    # question5 = serializers.FileField(allow_null=True)
+    # question6 = serializers.FileField(allow_null=True)
+    # def create(self, validated_data):
+    #     file_fields = [
+    #         'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
+    #         'question1', 'question2', 'question3', 'question4', 'question5', 'question6'
+    #     ]
+    #     for field_name in file_fields:
+    #         file_obj = validated_data.pop(field_name, None)
+    #         if file_obj:
+    #             filename = upload_file_to_s3(file_obj)
+    #             validated_data[field_name] = filename 
+    #     instance = QuestionMatchThePairs.objects.create(**validated_data)
 
-        return instance
+    #     return instance
     class Meta:
         model = QuestionMatchThePairs
         fields = '__all__'
@@ -603,3 +603,11 @@ class SubjectTableStructureSerilizerUpdate(serializers.ModelSerializer):
     class Meta:
             model = SubjectTableStructure
             fields =  '__all__'
+
+class TeacherAsessessmentSerializer(serializers.ModelSerializer):
+    chapter_id = ChapterListAllSerializer()
+    teacher_id = TeacherShortProfileSerilizer()
+    questions = QuestionTableStructureSerilizer(many=True, read_only=True)
+    class Meta:
+        model=AssessmentTableStructure
+        fields='__all__'        
