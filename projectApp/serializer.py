@@ -360,31 +360,31 @@ class GradeTableStructureSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuestionMatchThePairsSerilizer(serializers.ModelSerializer):
-    # option1 = serializers.FileField(allow_null=True)
-    # option2 = serializers.FileField(allow_null=True)
-    # option3 = serializers.FileField(allow_null=True)
-    # option4 = serializers.FileField(allow_null=True)
-    # option5 = serializers.FileField(allow_null=True)
-    # option6 = serializers.FileField(allow_null=True)
-    # question1 = serializers.FileField(allow_null=True)
-    # question2 = serializers.FileField(allow_null=True)
-    # question3 = serializers.FileField(allow_null=True)
-    # question4 = serializers.FileField(allow_null=True)
-    # question5 = serializers.FileField(allow_null=True)
-    # question6 = serializers.FileField(allow_null=True)
-    # def create(self, validated_data):
-    #     file_fields = [
-    #         'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
-    #         'question1', 'question2', 'question3', 'question4', 'question5', 'question6'
-    #     ]
-    #     for field_name in file_fields:
-    #         file_obj = validated_data.pop(field_name, None)
-    #         if file_obj:
-    #             filename = upload_file_to_s3(file_obj)
-    #             validated_data[field_name] = filename 
-    #     instance = QuestionMatchThePairs.objects.create(**validated_data)
+    option1 = serializers.FileField(allow_null=True)
+    option2 = serializers.FileField(allow_null=True)
+    option3 = serializers.FileField(allow_null=True)
+    option4 = serializers.FileField(allow_null=True)
+    option5 = serializers.FileField(allow_null=True)
+    option6 = serializers.FileField(allow_null=True)
+    question1 = serializers.FileField(allow_null=True)
+    question2 = serializers.FileField(allow_null=True)
+    question3 = serializers.FileField(allow_null=True)
+    question4 = serializers.FileField(allow_null=True)
+    question5 = serializers.FileField(allow_null=True)
+    question6 = serializers.FileField(allow_null=True)
+    def create(self, validated_data):
+        file_fields = [
+            'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
+            'question1', 'question2', 'question3', 'question4', 'question5', 'question6'
+        ]
+        for field_name in file_fields:
+            file_obj = validated_data.pop(field_name, None)
+            if file_obj:
+                filename = upload_file_to_s3(file_obj,"match_the_pair_images")
+                validated_data[field_name] = filename 
+        instance = QuestionMatchThePairs.objects.create(**validated_data)
 
-    #     return instance
+        return instance
     class Meta:
         model = QuestionMatchThePairs
         fields = '__all__'
@@ -402,6 +402,27 @@ class QuestionMultipleChoiceQuestionsSerilizer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
+    option1 = serializers.FileField(allow_null=True)
+    option2 = serializers.FileField(allow_null=True)
+    option3 = serializers.FileField(allow_null=True)
+    option4 = serializers.FileField(allow_null=True)
+    option5 = serializers.FileField(allow_null=True)
+    option6 = serializers.FileField(allow_null=True)
+    question = serializers.FileField(allow_null=True)
+    
+    def create(self, validated_data):
+        file_fields = [
+            'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
+            'question'
+        ]
+        for field_name in file_fields:
+            file_obj = validated_data.pop(field_name, None)
+            if file_obj:
+                filename = upload_file_to_s3(file_obj,"relevent_picture")
+                validated_data[field_name] = filename 
+        instance = QuestionSelectReleventPicture.objects.create(**validated_data)
+
+        return instance
 
     class Meta:
         model = QuestionSelectReleventPicture
@@ -450,13 +471,16 @@ class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
             que = QuestionTableStructure.objects.create(match_the_pairs_question=id,question_type='matching_question',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
 
         elif "relevent_picture" == validated_data['question_type']:
+
             relevent_picture = validated_data.pop('select_relevent_picture_question')
+            print(relevent_picture,"relevent_picture")
             grade_id = validated_data.pop('grade_id')
             subject_id = validated_data.pop('subject_id')
             serializer = QuestionSelectReleventPictureSerilizer(data=relevent_picture)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             id = QuestionSelectReleventPicture.objects.get(id=serializer.data['id'])
+            
             chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
             que = QuestionTableStructure.objects.create(select_relevent_picture_question=id,question_type='relevent_picture',chapter_id=chapter_id, grade_id=grade_id, subject_id=subject_id)
         
