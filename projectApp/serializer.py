@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import User, StudentTableStructure,TeacherTableStructure,GradeTableStructure,QuestionTableStructure,AssessmentTableStructure,QuestionMatchThePairs,QuestionMultipleChoiceQuestions,QuestionSelectReleventPicture,SubjectTableStructure,ChapterTableStructure
 import string
 import random
-from rest_framework.serializers import ModelSerializer, Serializer
+from django.forms.models import model_to_dict
+from rest_framework.serializers import ModelSerializer, Serializer,SerializerMethodField
 from django.db import transaction
 import copy
 from .utils import upload_file_to_s3
@@ -611,3 +612,33 @@ class TeacherAsessessmentSerializer(serializers.ModelSerializer):
     class Meta:
         model=AssessmentTableStructure
         fields='__all__'        
+
+
+class QuestionMultipleChoiceQuestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=QuestionMultipleChoiceQuestions
+        fields="__all__"
+        
+class QuestionTableStructureSerilizer1(serializers.ModelSerializer):
+    multiple_choice_question=SerializerMethodField('match_the_pairs')
+    def match_the_pairs(self,obj):
+        print("obj",obj)
+        obj1=model_to_dict(obj)
+        print("obj",obj1)
+        try:
+            math = QuestionMultipleChoiceQuestions.objects.get(
+                id=obj1['multiple_choice_question'])
+            return QuestionMultipleChoiceQuestionsSerializer(math).data
+        except Exception as error:
+            print("doctor catgory error", error)
+            return None
+            
+    class Meta:
+        model = QuestionTableStructure
+        fields = '__all__'
+        
+class StudentSideAssessmentListSerializer(serializers.ModelSerializer):
+    questions = QuestionTableStructureSerilizer1(many=True, read_only=True)
+    class Meta:
+        model=AssessmentTableStructure
+        fields='__all__'  

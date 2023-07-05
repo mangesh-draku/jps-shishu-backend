@@ -2,7 +2,7 @@ from django.urls import path,include
 from .auth import UserRegistration,StudentRegistration,TeacherRegistration,LoginAPI,TeacherDetail,TeacherList, StudentList, StudentDetail
 from .views import Grade_API,Question_API,Assessment_API,GradeDetail,QuestionDetail,\
    AssessmentDetail,QuestionSelectReleventPictureAPI,QuestionMatchThePairsAPI,QuestionMultipleChoiceQuestionsAPI,\
-   Chapter_API,ChapterDetail,Subject_API,SubjectDetail,List_Chapter_API,List_Subject_API,SubjectList,ChapterList,QuestionListAPI,TeacherAssessmentList
+   Chapter_API,ChapterDetail,Subject_API,SubjectDetail,List_Chapter_API,List_Subject_API,SubjectList,ChapterList,QuestionListAPI,TeacherAssessmentList,StudentAssessessmetList
 urlpatterns = [
    path('login-user', LoginAPI.as_view(), name='loginUser'),
    
@@ -47,4 +47,5 @@ urlpatterns = [
    # Assessment urls
    path('assessment-api', Assessment_API.as_view(), name='Assessment_Api'),
    path('assessment-detail/<int:pk>/', AssessmentDetail.as_view(), name='AssessmentDetail'),
+   path('student/assessment/',StudentAssessessmetList.as_view(),name="assessment list"),
 ]

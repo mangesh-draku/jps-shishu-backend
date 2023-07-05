@@ -7,7 +7,7 @@ from .models import GradeTableStructure,QuestionTableStructure,AssessmentTableSt
 from .serializer import GradeTableStructureSerilizer,QuestionTableStructureSerilizer,AssessmentTableStructureSerilizer,\
     QuestionSelectReleventPicture,QuestionMultipleChoiceQuestionsSerilizer,QuestionMatchThePairsSerilizer,\
     QuestionSelectReleventPictureSerilizer,QuestionTableStructureSerilizerCreate,ChapterTableStructureSerilizer,\
-    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate,AssessmentTableStructureSerilizerCreate,TeacherAsessessmentSerializer
+    SubjectTableStructureSerilizer,ListChapterTableStructureSerilizer,ListSubjectTableStructureSerilizer,SubjectListSerilizer,ChapterListSerilizer,SubjectListAllserializer,ChapterListAllSerializer, SubjectTableStructureSerilizerUpdate, ChapterTableStructureSerilizerUpdate,AssessmentTableStructureSerilizerCreate,TeacherAsessessmentSerializer,StudentSideAssessmentListSerializer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, mixins, pagination, filters
@@ -300,3 +300,17 @@ class TeacherAssessmentList(generics.ListAPIView):
     def get_queryset(self):
         teacher_id=self.kwargs['teacher_id']
         return AssessmentTableStructure.objects.filter(teacher_id=teacher_id)
+
+class StudentAssessessmetList(generics.ListAPIView):
+    permission_classes=(AllowAny,)
+    serializer_class=StudentSideAssessmentListSerializer
+    queryset=AssessmentTableStructure.objects.all()
+
+    def get_queryset(self):
+        qs=super().get_queryset()
+        try:
+            grade_id=self.request.query_params['grade_id']
+            return qs.filter(grade_id=grade_id)
+        except Exception as error:
+            print(error)
+        return StudentSideAssessmentListSerializer(garde_id=grade_id)
