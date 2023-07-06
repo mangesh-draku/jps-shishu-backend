@@ -408,18 +408,27 @@ class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
     option4 = serializers.FileField(allow_null=True)
     option5 = serializers.FileField(allow_null=True)
     option6 = serializers.FileField(allow_null=True)
-    question = serializers.FileField(allow_null=True)
+    question_image=serializers.FileField(allow_null=True)
+    question = serializers.CharField(allow_null=True)
     
     def create(self, validated_data):
         file_fields = [
             'option1', 'option2', 'option3', 'option4', 'option5', 'option6',
-            'question'
+            'question_image'
         ]
+        char_fields = ['question']
+
         for field_name in file_fields:
             file_obj = validated_data.pop(field_name, None)
             if file_obj:
                 filename = upload_file_to_s3(file_obj,"relevent_picture")
                 validated_data[field_name] = filename 
+            
+        for field_name in char_fields:
+            field_value = validated_data.pop(field_name, None)
+            if field_value:
+                validated_data[field_name] = field_value
+    
         instance = QuestionSelectReleventPicture.objects.create(**validated_data)
 
         return instance
@@ -427,8 +436,6 @@ class QuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
     class Meta:
         model = QuestionSelectReleventPicture
         fields = '__all__'
-
-
 
 
 class QuestionTableStructureSerilizerCreate(serializers.ModelSerializer):
@@ -524,10 +531,12 @@ class ChapterTableStructureSerilizer(serializers.ModelSerializer):
             model = ChapterTableStructure
             fields =  '__all__'
 
+
 class ListSubjectTableStructureSerilizer(serializers.ModelSerializer):
     class Meta:
             model = SubjectTableStructure
             fields =  '__all__'
+
 class ListChapterTableStructureSerilizer(serializers.ModelSerializer):
     class Meta:
             model = ChapterTableStructure
@@ -591,6 +600,7 @@ class AssessmentTableStructureSerilizerCreate(serializers.ModelSerializer):
 
         related_ids = validated_data.get('questions', [])
         related_objects = QuestionTableStructure.objects.filter(pk__in=related_ids)
+        print("related_objects",related_objects)
 
         chapter_id = ChapterTableStructure.objects.get(chapter_id=validated_data['chapter_id'])
         teacher_id = TeacherTableStructure.objects.get(id=validated_data['teacher_id'])
@@ -642,21 +652,39 @@ class QuestionMultipleChoiceQuestionsSerializer(serializers.ModelSerializer):
     class Meta:
         model=QuestionMultipleChoiceQuestions
         fields="__all__"
-        
+
+
+class QuestionSelectReleventPictureSerilizer1(serializers.ModelSerializer):
+    class Meta:
+        model=QuestionSelectReleventPicture
+        fields="__all__"
+
 class QuestionTableStructureSerilizer1(serializers.ModelSerializer):
     multiple_choice_question=SerializerMethodField('match_the_pairs')
+    select_relevent_picture_question=SerializerMethodField('select_relevent_picture_question1')
     def match_the_pairs(self,obj):
         print("obj",obj)
         obj1=model_to_dict(obj)
         print("obj",obj1)
-        try:
-            math = QuestionMultipleChoiceQuestions.objects.get(
-                id=obj1['multiple_choice_question'])
-            return QuestionMultipleChoiceQuestionsSerializer(math).data
+        try:           
+                math = QuestionMultipleChoiceQuestions.objects.get(
+                id=obj1['multiple_choice_question'],)
+                return QuestionMultipleChoiceQuestionsSerializer(math).data
         except Exception as error:
             print("doctor catgory error", error)
             return None
-            
+
+    def select_relevent_picture_question1(self,obj):
+        print("obj1",obj)
+        obj1=model_to_dict(obj)
+        print("obj1",obj1)
+        try:
+            math = QuestionSelectReleventPicture.objects.get(
+                id=obj1['select_relevent_picture_question'])
+            return QuestionSelectReleventPictureSerilizer1(math).data
+        except Exception as error:
+            print("doctor catgory error", error)
+            return None
     class Meta:
         model = QuestionTableStructure
         fields = '__all__'
@@ -666,3 +694,27 @@ class StudentSideAssessmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model=AssessmentTableStructure
         fields='__all__'  
+
+
+class ListQuestionSelectReleventPictureSerilizer(serializers.ModelSerializer):
+    select_relevent_picture_question=SerializerMethodField('question_details')
+    def question_details(self,obj):
+        print("obj",obj)
+        obj1=model_to_dict(obj)
+        print("obj",obj1)
+        class QuestionTableStructureSerilizer(serializers.ModelSerializer):
+            chapter_id = ChapterListAllSerializer()            
+            class Meta:
+                model = QuestionTableStructure
+                fields = '__all__'
+        try:
+            question = QuestionTableStructure.objects.get(
+                select_relevent_picture_question_id=obj.id)
+            print("question",question)
+            return QuestionTableStructureSerilizer(question).data
+        except Exception as error:
+            print("error", error)
+            return None
+    class Meta:
+        model=QuestionSelectReleventPicture
+        fields='__all__'
